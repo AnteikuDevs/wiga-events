@@ -57,7 +57,7 @@ let WigaClass = Wiga.class({
                     {
                         userActions.push({
                             text: '<span class="badge badge-light-warning">Cetak Sertifikat</span>', 
-                            href: WigaRoute.url(data.event.slug+'/certificate/'+data.student_id),
+                            href: WigaRoute.url('/certificate/cert-'+data.attendance.id),
                             // events: {
                             //     click: function(e) {
                             //         WigaRoute.redirect(data.event.slug+'/certificate/'+data.student_id);
