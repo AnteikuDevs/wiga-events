@@ -28,8 +28,12 @@ class AuthController extends Controller
             ]);
         }
 
-        $data->remember_token = str_random(50);
-        $data->save();
+        if(!$data->remember_token)
+        {
+            $data->remember_token = str_random(50);
+            $data->save();
+        }
+
 
         return response()->json([
             'status' => true,
