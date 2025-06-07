@@ -135,10 +135,10 @@
     <div class="d-flex align-items-center bg-light-primary rounded border-dashed border-primary py-2 px-4 mb-3" id="content-attendance"></div>
     <div id="alert--inline-copy"></div>
 
-    <x-slot name="footer">
+    {{-- <x-slot name="footer">
         <x-button dismiss-modal color="secondary">Batal</x-button>
         <x-button type="submit" color="danger" indicator>Hapus</x-button>
-    </x-slot>
+    </x-slot> --}}
 
 </x-modal>
 
