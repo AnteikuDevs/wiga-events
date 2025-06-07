@@ -27,7 +27,17 @@ class EventController extends Controller
 
         if($data->expired_at < now())
         {
-            return abort(404);
+            return view('event.finished');
+        }
+
+        if($data->event->status_id == '0')
+        {
+            return view('event.comingsoon');
+        }
+
+        if($data->event->status_id == '2')
+        {
+            return view('event.finished');
         }
 
         return view('event.attendance',[
