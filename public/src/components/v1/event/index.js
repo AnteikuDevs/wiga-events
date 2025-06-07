@@ -84,7 +84,7 @@ let WigaClass = Wiga.class({
                                 </div>
 
                                 <div class="d-grid">
-                                    ${data.status_id == '0' ? `<button type="button" class="btn btn-gradient btn-lg fw-bold py-3" data-bs-toggle="modal" data-bs-target="#ModalRegister">
+                                    ${data.status_id != '2' ? `<button type="button" class="btn btn-gradient btn-lg fw-bold py-3" data-bs-toggle="modal" data-bs-target="#ModalRegister">
                                             <i class="fa-solid fa-ticket me-2"></i>
                                                 Daftar Sekarang
                                     </button>` : ''}
