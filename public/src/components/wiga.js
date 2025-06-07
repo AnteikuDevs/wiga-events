@@ -342,6 +342,16 @@ const WigaString = new class {
         return `${year}-${month}-${day}T${hours}:${minutes}`;
     }
 
+    rtrim(str, chars) {
+        if (!chars) {
+            return str;
+        }
+        const escapedChars = chars.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`[${escapedChars}]+$`);
+        
+        return str.replace(regex, '');
+    }
+
 }
 
 /* 
