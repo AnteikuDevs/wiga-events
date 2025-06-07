@@ -22,7 +22,7 @@
     <x-forms.input type="text" name="phone_number" label="Nomor Telepon" placeholder="Contoh: 08123456789"></x-forms.input>
 
     <x-alert type="info" :dismissible=false>
-        <strong>Perhatian:</strong> Email atau Nomor Telepon untuk pengiriman sertifikat, pastikan anda memasukkan data yang benar!
+        <strong>Perhatian:</strong> Pastikan Nomor Telepon yang Anda cantumkan sudah benar. Sertifikat kelulusan/partisipasi akan dikirim melalui nomor telepon ini.
     </x-alert>
 
     <x-slot name="footer">
