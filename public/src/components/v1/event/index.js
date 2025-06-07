@@ -49,18 +49,28 @@ let WigaClass = Wiga.class({
                                                     </p>
                                                 </div>
                                             </div>`
-                                        : ` <div class="info-item d-flex align-items-center">
-                                                <i class="fa-solid fa-map-marker-alt fa-fw fa-xl me-3"></i>
+                                        : ` <div class="info-item d-flex">
+                                                <i class="fa-solid fa-map-marker-alt fa-fw fa-xl me-3 mt-3"></i>
                                                 <div>
                                                     <h6 class="mb-0 fw-bold">Lokasi</h6>
-                                                    <p class="mb-0 text-muted">${data.location}</p>
+                                                    <p class="mb-0 text-muted location-text">
+                                                        ${
+                                                            data.location ? 
+                                                            data.location.replace(/(https?:\/\/[^\s]+|www\.[^\s]+)/g, url => {
+                                                                const href = url.startsWith('http') ? url : `http://${url}`;
+                                                                return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="text-info">${url}</a>`;
+                                                            })
+                                                            .replace(/\n/g, '<br>') 
+                                                            : ''
+                                                        }
+                                                    </p>
                                                 </div>
                                             </div>`
                                     }
                                 </div>
                                 <div class="mb-5">
                                     <h5 class="fw-bold">Deskripsi Event</h5>
-                                    <p class="text-secondary" style="line-height: 1.8;">
+                                    <p class="text-secondary text-break-url" style="line-height: 1.8;">
                                         ${
                                             data.description ? 
                                             data.description.replace(/(https?:\/\/[^\s]+|www\.[^\s]+)/g, url => {

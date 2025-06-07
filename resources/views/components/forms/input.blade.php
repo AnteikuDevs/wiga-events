@@ -39,7 +39,7 @@
 @elseif($type == 'textarea')
 
 <div class="form-floating mb-4">
-    <textarea name="{{ $name }}" rows="2" placeholder="" class="form-control h-80px {{ $class }}"{{ $required ? ' required' : '' }}{{ $autocomplete ? " autocomplete=$autocomplete " : '' }} {{ $attrs }}>{{ old($name, $value) }}</textarea>
+    <textarea name="{{ $name }}" placeholder="" class="form-control min-h-100px {{ $class }}"{{ $required ? ' required' : '' }}{{ $autocomplete ? " autocomplete=$autocomplete " : '' }} {{ $attrs }}>{{ old($name, $value) }}</textarea>
     <label for="{{ $inputId }}">{{ $label }}</label>
     {{-- Tampilkan placeholder sebagai teks bantuan jika ada --}}
     @if($placeholderText)

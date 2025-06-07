@@ -107,5 +107,22 @@
     .badge.bg-success-light { background-color: rgba(25, 135, 84, 0.1); color: #0f5132; }
     .badge.bg-danger-light { background-color: rgba(220, 53, 69, 0.1); color: #842029; }
     .badge.bg-secondary-light { background-color: rgba(108, 117, 125, 0.1); color: #41464b; }
+
+    .location-text {
+        overflow-wrap: break-word;
+        word-wrap: break-word; 
+        max-width: 55%;
+    }
+
+    @media (min-width: 992px) {
+        .location-text {
+            max-width: 100%;
+        }
+    }
+
+    .text-break-url {
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+    }
 </style>
 @endpush

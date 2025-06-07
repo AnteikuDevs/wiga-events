@@ -18,7 +18,7 @@ let WigaClass = Wiga.class({
 
                     let type = `<span class="badge badge-light-${data.type == 'offline' ? 'danger' : 'success'}">${data.type.toUpperCase()}</span>`
 
-                    return `<a href="${WigaRoute.url(data.slug)}">${data.title}</a><br>${type}`
+                    return `<a href="${WigaRoute.url(data.slug)}" class="fw-bold mb-2">${data.title}</a><br>${type}`
                 }},
                 { data: 'description' },
                 { data: function(data){
