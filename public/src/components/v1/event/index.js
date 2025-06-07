@@ -18,7 +18,6 @@ let WigaClass = Wiga.class({
                             </div>
 
                             <div class="col-lg-6">
-                                <div id="wiga-alert"></div>
                                 <div class="mb-4">
                                     ${statusBadge}
                                     <h3 class="event-title">${data.title}</h3>
@@ -82,7 +81,7 @@ let WigaClass = Wiga.class({
                                         }
                                     </p>
                                 </div>
-
+                                <div id="wiga-alert"></div>
                                 <div class="d-grid">
                                     ${data.status_id != '2' ? `<button type="button" class="btn btn-gradient btn-lg fw-bold py-3" data-bs-toggle="modal" data-bs-target="#ModalRegister">
                                             <i class="fa-solid fa-ticket me-2"></i>
