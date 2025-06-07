@@ -30,7 +30,7 @@ class EventController extends Controller
     public function store(Request $request,string $slug)
     {
 
-        $data = Event::where('slug', $slug)->where('start_time', '>=', date('Y-m-d H:i'))->first();
+        $data = Event::where('slug', $slug)->first();
 
         if (!$data) {
             return response([
