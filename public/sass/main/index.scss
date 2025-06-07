@@ -1,0 +1,62 @@
+
+widget-main {
+   
+    widget-login {
+        height: 85vh;
+        min-height: 550px;
+        display: block;
+
+        // @media screen and (max-width: 768px) {
+        //     & {
+        //         height: 88vh;                
+        //     }
+        // }
+
+        .row {
+            height: 100%;
+            // min-height: 500px;
+            margin-top: 40px;
+
+            @media screen and (max-width: 768px) {
+                & {
+                    margin-top: 20px;
+                }
+            }
+        }
+
+        .login-content {
+            width: 100%;
+            max-width: 420px;
+
+            @media screen and (min-width: 1400px) {
+                & {
+                    max-width: 480px;
+                }
+            }
+        }
+
+
+        .login-box-container {
+            top: 50%;
+            transform: translateY(-50%);
+
+            .card-body {
+                padding: 3rem 2rem;
+
+                @media screen and (max-width: 768px) {
+                    & {
+                        padding: 2rem 1rem;
+                    }
+                }
+            }
+
+            @media screen and (max-width: 768px) {
+                & {
+                    box-shadow: none !important;
+                }
+            }
+        }
+
+    }
+
+}

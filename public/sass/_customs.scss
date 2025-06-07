@@ -1,0 +1,106 @@
+
+@use 'bootstrap/bootstrap' as bs;
+
+.btn-primary {
+    // color: #7888fc !important;
+    font-weight: 500;
+}
+
+.btn-gradient-primary {
+    border: transparent;
+    background-image: linear-gradient(to right, #FFC107, #FFA500);
+
+    &:focus {
+        background-image: linear-gradient(to right, #FFC107, #FFA500) !important;
+    }
+}
+
+[data-theme="dark"] {
+    
+    .dark\:text-light {
+        color: #fff !important;
+    }
+
+    .btn-gradient-primary {
+        color: #212529 !important;
+    }
+
+    .card {
+        --bs-card-box-shadow: 0 4px 12px rgba(133, 133, 133, 0.08) !important;
+    }
+
+}
+
+
+#nexa-modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    opacity: 0;
+    animation: fadeInOverlay 0.3s ease forwards;
+}
+
+#nexa-modal {
+    background: #fff;
+    padding: 24px 20px;
+    border-radius: 12px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+    transform: translateY(-30px) scale(0.95);
+    opacity: 0;
+    animation: slideFadeIn 0.3s ease-out forwards;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+
+#nexa-modal h4 {
+    margin-top: 10px;
+    font-size: 1.2rem;
+}
+
+#nexa-modal p {
+    margin: 8px 0 20px;
+    color: #666;
+}
+
+#nexa-modal .close-btn {
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+
+@keyframes fadeInOverlay {
+    to { opacity: 1; }
+}
+
+@keyframes slideFadeIn {
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.alert-dismissible .btn-close {
+    // position: absolute; 
+    top: 50%; 
+    // right: 0.75rem; 
+    transform: translateY(-50%);
+}
+
+.error-message-input {
+    color: bs.$danger;
+}
