@@ -32,19 +32,44 @@ let WigaClass = Wiga.class({
                                             <p class="mb-0 text-muted">${data.date_format}</p>
                                         </div>
                                     </div>
-                                    <div class="info-item d-flex align-items-center">
+                                    <div class="info-item d-flex align-items-center mb-3">
                                         <i class="fa-solid fa-clock fa-fw fa-xl me-3"></i>
                                         <div>
                                             <h6 class="mb-0 fw-bold">Waktu</h6>
                                             <p class="mb-0 text-muted">${data.time_format}</p>
                                         </div>
                                     </div>
+                                    ${data.type == 'online'
+                                        ? ` <div class="info-item d-flex align-items-center">
+                                                <i class="fa-solid fa-link fa-fw fa-xl me-3"></i>
+                                                <div>
+                                                    <h6 class="mb-0 fw-bold">Akses Online</h6>
+                                                    <p class="mb-0 text-muted">
+                                                        <a href="${data.link}" target="_blank" rel="noopener noreferrer" class="text-info">Klik untuk bergabung</a>
+                                                    </p>
+                                                </div>
+                                            </div>`
+                                        : ` <div class="info-item d-flex align-items-center">
+                                                <i class="fa-solid fa-map-marker-alt fa-fw fa-xl me-3"></i>
+                                                <div>
+                                                    <h6 class="mb-0 fw-bold">Lokasi</h6>
+                                                    <p class="mb-0 text-muted">${data.location}</p>
+                                                </div>
+                                            </div>`
+                                    }
                                 </div>
-                                
                                 <div class="mb-5">
                                     <h5 class="fw-bold">Deskripsi Event</h5>
                                     <p class="text-secondary" style="line-height: 1.8;">
-                                        ${data.description.replace(/\n/g, '<br>')}
+                                        ${
+                                            data.description ? 
+                                            data.description.replace(/(https?:\/\/[^\s]+|www\.[^\s]+)/g, url => {
+                                                const href = url.startsWith('http') ? url : `http://${url}`;
+                                                return `<a href="${href}" target="_blank" rel="noopener noreferrer" class="text-info">${url}</a>`;
+                                            })
+                                            .replace(/\n/g, '<br>') 
+                                            : ''
+                                        }
                                     </p>
                                 </div>
 

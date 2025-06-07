@@ -40,6 +40,15 @@ let WigaClass = Wiga.class({
                     // if(data.status_id == 0){
 
                         const userActions = [
+                            ...(data.status_id == '1' && data.status_publish == '0'? [{
+                                text: '<span class="badge badge-primary">Generate Link Kehadiran</span>', 
+                                events: {
+                                    click: function(e) {
+                                        e.preventDefault();
+                                        WigaClass.generateAttendance(data.id)
+                                    }
+                                }
+                            }] : []),
                             ...(data.status_publish == '0'? [{
                                 text: '<span class="badge badge-secondary">Salin Link Pendaftaran</span>', 
                                 events: {
@@ -60,12 +69,12 @@ let WigaClass = Wiga.class({
                                     }
                                 }
                             }] : []),
-                            ...(data.status_id == '1' && data.status_publish == '0'? [{
-                                text: '<span class="badge badge-primary">Generate Link Kehadiran</span>', 
+                            ...(data.status_id != '' && data.status_publish == '0'? [{
+                                text: '<span class="badge badge-success">Publish Sertifikat</span>', 
                                 events: {
                                     click: function(e) {
-                                        e.preventDefault();
-                                        WigaClass.generateAttendance(data.id)
+                                        $wiga('#ModalConfirmPublish').attr('data-id',data.id);
+                                        $wiga('#ModalConfirmPublish').modal('show');
                                     }
                                 }
                             }] : []),
@@ -89,11 +98,8 @@ let WigaClass = Wiga.class({
                                 //     }
                                 // }
                             },
-                        ];
-
-                        if(data.status_id == '0')
-                        {
-                            userActions.push({ 
+                            
+                            { 
                                 text: '<span class="badge badge-light-primary">Edit</span>', 
                                 events: {
                                     click: function(e) {
@@ -125,8 +131,12 @@ let WigaClass = Wiga.class({
                                         $wiga('#ModalForm').modal('show');
                                     }
                                 }
-                            },
-                            {
+                            }
+                        ];
+
+                        if(data.status_id == '0')
+                        {
+                            userActions.push({
                                 text: '<span class="badge badge-light-danger">Hapus</span>', 
                                 events: {
                                     click: function(e) {
@@ -135,21 +145,6 @@ let WigaClass = Wiga.class({
                                     }
                                 }
                             })
-                        }
-
-                        if(data.status_id != '0')
-                        {
-
-                            userActions.push({
-                                text: '<span class="badge badge-success">Publish Sertifikat</span>', 
-                                events: {
-                                    click: function(e) {
-                                        $wiga('#ModalConfirmPublish').attr('data-id',data.id);
-                                        $wiga('#ModalConfirmPublish').modal('show');
-                                    }
-                                }
-                            })
-
                         }
 
                         return WigaComponent.dropdown({

@@ -29,7 +29,7 @@
         <script src="{{ asset('plugins/bootstrap.bundle.min.js') }}"></script>
         <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
         <script src="{{ asset('js/wiga-config.js') }}"></script>
-        <script src="{{ asset('js/wiga.js') }}"></script>
+        <script src="{{ asset('js/wiga.js') }}?v={{ time() }}"></script>
     @if (isset($js) && !empty($js))
         @if(is_array($js))
             @foreach($js as $j)

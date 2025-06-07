@@ -70,10 +70,16 @@
             <script src="https://js.pusher.com/8.4.0/pusher.min.js"></script>
             <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
             <script src="{{ asset('js/wiga-config.js') }}"></script>
-            <script src="{{ asset('js/wiga.js') }}"></script>
-            <script src="{{ asset('js/'.componentJS('me').'.js') }}"></script>
+            <script src="{{ asset('js/wiga.js') }}?v={{ time() }}"></script>
+            <script src="{{ asset('js/'.componentJS('me').'.js') }}?v={{ time() }}"></script>
         @if (isset($js) && !empty($js))
-        <script src="{{ asset('js/'.$js.'.js') }}"></script>
+            @if(is_array($js))
+                @foreach($js as $j)
+                    <script src="{{ asset('js/'.$j.'.js') }}?v={{ time() }}"></script>
+                @endforeach
+            @else
+                <script src="{{ asset('js/'.$js.'.js') }}?v={{ time() }}"></script>
+            @endif
         @endif
         </widget-script>
 	</body>
