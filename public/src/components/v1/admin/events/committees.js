@@ -15,7 +15,7 @@ let WigaClass = Wiga.class({
                 { data: 'student_id'},
                 { data: 'name' },
                 { data: 'parallel_class' },
-                { data: 'email' },
+                // { data: 'email' },
                 { data: 'phone_number' },
                 { data: function(data){
                     if(data.attendance)
@@ -57,11 +57,12 @@ let WigaClass = Wiga.class({
                     {
                         userActions.push({
                             text: '<span class="badge badge-light-warning">Cetak Sertifikat</span>', 
-                            events: {
-                                click: function(e) {
-                                    WigaRoute.redirect(data.event.slug+'/certificate/'+data.student_id);
-                                }
-                            }
+                            href: WigaRoute.url(data.event.slug+'/certificate/'+data.student_id),
+                            // events: {
+                            //     click: function(e) {
+                            //         WigaRoute.redirect(data.event.slug+'/certificate/'+data.student_id);
+                            //     }
+                            // }
                         });
                     }
 

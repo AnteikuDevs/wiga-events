@@ -88,7 +88,7 @@ class EventCertificateController extends Controller
             'image' => 'nullable|required_if:image_deleted,1|image|mimes:jpeg,png,jpg,gif',
             'event' => 'required|exists:events,id',
             'type' => 'required|in:participant,committee',
-            'certificate_number' => 'required|unique:certificate_templates,certificate_number',
+            'certificate_number' => 'required',
         ],[
             'image.required_if' => 'Banner harus diisi',
             'image.image' => 'Banner harus berupa gambar',

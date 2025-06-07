@@ -13,8 +13,23 @@
     $attrId = $attributes->get('id');
     $inputId = $attrId ?: 'input_' . str_random(8);
 
-    // Buat attribute bag baru dengan id diset jika belum ada
-    $attrs = $attrId ? $attributes : $attributes->merge(['id' => $inputId]);
+    // Cek apakah ada placeholder dan simpan nilainya
+    $placeholderText = $attributes->get('placeholder');
+
+    // Buat attribute bag baru.
+    // Mulai dengan semua atribut yang diberikan.
+    $attrs = $attributes;
+
+    // Tambahkan 'id' jika belum ada.
+    if (!$attrId) {
+        $attrs = $attrs->merge(['id' => $inputId]);
+    }
+
+    // Jika ada placeholder, HAPUS dari attribute bag yang akan di-render di input.
+    // Teks placeholder akan kita tampilkan manual di bawah menggunakan tag <small>.
+    if ($placeholderText) {
+        $attrs = $attrs->except('placeholder');
+    }
 @endphp
 
 @if($type == 'upload-image')
@@ -26,9 +41,12 @@
 <div class="form-floating mb-4">
     <textarea name="{{ $name }}" rows="2" placeholder="" class="form-control h-80px {{ $class }}"{{ $required ? ' required' : '' }}{{ $autocomplete ? " autocomplete=$autocomplete " : '' }} {{ $attrs }}>{{ old($name, $value) }}</textarea>
     <label for="{{ $inputId }}">{{ $label }}</label>
+    {{-- Tampilkan placeholder sebagai teks bantuan jika ada --}}
+    @if($placeholderText)
+        <small class="text-muted d-block mt-1">{{ $placeholderText }}</small>
+    @endif
     <div data-error="{{ $name }}"></div>
 </div>
-
 
 @elseif($type == 'checkbox')
 
@@ -50,6 +68,10 @@
         {{ $slot }}
     </select>
     <label for="{{ $inputId }}">{{ $label }}</label>
+    {{-- Tampilkan placeholder sebagai teks bantuan jika ada --}}
+    @if($placeholderText)
+        <small class="text-muted d-block mt-1">{{ $placeholderText }}</small>
+    @endif
     <div data-error="{{ $name }}"></div>
 </div>
 
@@ -58,6 +80,10 @@
 <div class="form-floating mb-4">
     <input type="{{ $type }}" name="{{ $name }}" value="{{ old($name, $value) }}" placeholder="" class="form-control {{ $class }}"{{ $required ? ' required' : '' }}{{ $autocomplete ? " autocomplete=$autocomplete " : '' }} {{ $attrs }}>
     <label for="{{ $inputId }}">{{ $label }}</label>
+    {{-- Tampilkan placeholder sebagai teks bantuan jika ada --}}
+    @if($placeholderText)
+        <small class="text-muted d-block mt-1">{{ $placeholderText }}</small>
+    @endif
     <div data-error="{{ $name }}"></div>
 </div>
 

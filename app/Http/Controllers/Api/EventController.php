@@ -52,8 +52,10 @@ class EventController extends Controller
             'name' => 'required',
             'student_id' => 'required',
             'parallel_class' => 'required',
-            'email' => 'required|email',
-            'phone_number' => 'required',
+            // 'email' => 'required|email',
+            'phone_number' => 'required|starts_with:08',
+        ],[
+            'phone_number.starts_with' => 'Masukkan Nomor Telepon dengan benar sesuai petunjuk',
         ]);
 
         $data->participants()->create($request->all());

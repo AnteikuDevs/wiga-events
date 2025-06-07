@@ -25,6 +25,8 @@ Route::prefix('v1')->group(function () {
                 Route::resource('events/{event}/participants', Admin\EventParticipantController::class);
                 Route::resource('events/certificates', Admin\EventCertificateController::class);
                 Route::get('events/list', [Admin\EventController::class,'list']);
+                Route::post('events/{id}/publish', [Admin\EventController::class,'publish']);
+                Route::post('events/{id}/send-notification', [Admin\EventController::class,'sendNotification']);
                 Route::post('events/{id}/generate-attendance', [Admin\EventController::class,'generateAttendance']);
                 Route::resource('events', Admin\EventController::class);
                 

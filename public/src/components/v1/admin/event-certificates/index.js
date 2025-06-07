@@ -14,96 +14,57 @@ let WigaClass = Wiga.class({
                 { data: function(data){
                     return `<div class="img-fluid" wigaimage-lazyload="${WigaRoute.storageUrl(data.image_id)}">`
                 }},
-                { data: 'event.title' },
+                { data: function(data){ 
+
+                    let type = `<span class="badge badge-light-${data.event.type == 'offline' ? 'danger' : 'success'}">${data.event.type.toUpperCase()}</span>`
+
+                    return `<a href="${WigaRoute.url(data.event.slug)}">${data.event.title}</a><br>${type}`
+                } },
                 { data: function(data){
                     return data.participant_type == 'participant' ? 'Peserta' : 'Panitia Acara'
                 } },
                 { data: 'certificate_number' },
                 { data: function(data){
 
-                    if(data.event.status_id == 0){
 
-                        const userActions = [
-                            { 
-                                text: '<span class="badge badge-secondary">Lihat</span>', 
-                                events: {
-                                    click: function(e) {
-                                        e.preventDefault();
-                                        window.open(WigaRoute.url(data.slug), '_blank');
-                                    }
-                                }
-                            },
-                            { 
-                                text: '<span class="badge badge-light-info">Panitia Acara</span>',
-                                events: {
-                                    click: function(e) {
-                                        e.preventDefault();
-                                        WigaRoute.redirect('/admin/events/'+data.id+'/committees');
-                                    }
-                                }
-                            },
-                            { 
-                                text: '<span class="badge badge-light-warning">Peserta</span>',
-                                events: {
-                                    click: function(e) {
-                                        e.preventDefault();
-                                        WigaRoute.redirect('/admin/events/'+data.id+'/participants');
-                                    }
-                                }
-                            },
-                            { 
-                                text: '<span class="badge badge-light-primary">Edit</span>', 
-                                events: {
-                                    click: function(e) {
+                    const userActions = [
+                        { 
+                            text: '<span class="badge badge-light-primary">Edit</span>', 
+                            events: {
+                                click: function(e) {
 
-                                        WigaUploadImage.preview({
-                                            name: 'image',
-                                            id: data.image_id,
-                                            filename: data.image.name
-                                        })
+                                    WigaUploadImage.preview({
+                                        name: 'image',
+                                        id: data.image_id,
+                                        filename: data.image.name
+                                    })
 
-                                        $wiga('#ModalForm [name=title]').val(data.title);
-                                        $wiga('#ModalForm [name=description]').val(data.description);
-                                        $wiga('#ModalForm [name=start_time]').val(WigaString.formatForDateTimeLocal(data.start_time));
-                                        if(data.end_time)
-                                        {
-                                            $wiga('#ModalForm [name=end_time]').val(WigaString.formatForDateTimeLocal(data.end_time));
-                                        }else{
-                                            $wiga('#ModalForm [name=until_finish]').prop('checked',true).trigger('change');
-                                        }
-                                        $wiga('#ModalForm').attr('data-id',data.id);
-                                        $wiga('#ModalForm').modal('show');
-                                    }
+                                    $wiga('#ModalForm [name=event]').val(data.event_id).trigger('change');
+                                    $wiga('#ModalForm [name=type]').val(data.participant_type).trigger('change');
+                                    $wiga('#ModalForm [name=certificate_number]').val(data.certificate_number);
+
+                                    $wiga('#ModalForm').attr('data-id',data.id);
+                                    $wiga('#ModalForm').modal('show');
                                 }
-                            },
-                            { 
-                                text: '<span class="badge badge-light-danger">Hapus</span>', 
-                                events: {
-                                    click: function(e) {
-                                        $wiga('#ModalDelete').attr('data-id',data.id);
-                                        $wiga('#ModalDelete').modal('show');
-                                    }
-                                }
-                            },
-                        ];
-
-                        return WigaComponent.dropdown({
-                            triggerContent: '<i class="fa-duotone fa-gear"></i>',
-                            color: 'light-primary',
-                            items: userActions,
-                        });
-                    }
-
-                    return WigaComponent.button({
-                        color: 'light-primary',
-                        text: 'Preview',
-                        events: {
-                            click: function(e) {
-                                e.preventDefault();
-                                window.open(WigaRoute.url(data.slug), '_blank');
                             }
-                        }
-                    })
+                        },
+                        { 
+                            text: '<span class="badge badge-light-danger">Hapus</span>', 
+                            events: {
+                                click: function(e) {
+                                    $wiga('#ModalDelete').attr('data-id',data.id);
+                                    $wiga('#ModalDelete').modal('show');
+                                }
+                            }
+                        },
+                    ];
+
+                    return WigaComponent.dropdown({
+                        triggerContent: '<i class="fa-duotone fa-gear"></i>',
+                        color: 'light-primary',
+                        items: userActions,
+                    });
+                        
                 } }
             ],
             pageLength: 10,
@@ -126,7 +87,7 @@ let WigaClass = Wiga.class({
                 return {
                     id: item.id,
                     text: item.title,
-                    description: item.date_format + ' ' + item.time_format +" WIB"
+                    description: item.date_format + ', ' + item.time_format
                 }
             })
 

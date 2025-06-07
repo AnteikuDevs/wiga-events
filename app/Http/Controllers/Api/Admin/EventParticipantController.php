@@ -30,7 +30,7 @@ class EventParticipantController extends Controller
             'student_id',
             'name',
             'parallel_class',
-            'email',
+            // 'email',
             'phone_number'
         ]);
 
@@ -56,24 +56,32 @@ class EventParticipantController extends Controller
             'name' => 'required',
             'student_id' => 'required',
             'parallel_class' => 'required',
-            'email' => 'required|email',
-            'phone_number' => 'required',
+            // 'email' => 'required|email',
+            'phone_number' => 'required|starts_with:08',
+        ],[
+            'phone_number.starts_with' => 'Masukkan Nomor Telepon dengan benar sesuai petunjuk',
         ]);
 
-        $cek = $data->participants()->where('student_id', $request->student_id);
+        $cekPhoneNumberByEvent = $data->participants()->where('phone_number', $request->phone_number)->first();
+        $cekStudentIdByEvent = $data->participants()->where('student_id', $request->student_id)->first();
 
-        if ($cek->count() > 0) {
+        if ($cekPhoneNumberByEvent || $cekStudentIdByEvent) {
             return response([
-                'status' => false,
-                'message' => "Data sudah terdaftar",
+                'errors' => [
+                    'phone_number' => [
+                        'Nomor telepon sudah terdaftar.'
+                    ],
+                    ...($cekStudentIdByEvent ? ['student_id' => ['NIM sudah terdaftar']] : [])
+                ],
+                'message' => 'Nomor telepon sudah terdaftar. '.($cekStudentIdByEvent ? ' (and 1 more errors)' : '')
             ]);
-        }        
+        }
 
         $data->participants()->create([
             'name' => $request->name,
             'student_id' => $request->student_id,
             'parallel_class' => $request->parallel_class,
-            'email' => $request->email,
+            // 'email' => $request->email,
             'phone_number' => $request->phone_number,
             'type' => Participant::TYPE_PARTICIPANT,
         ]);
@@ -114,8 +122,10 @@ class EventParticipantController extends Controller
             'name' => 'required',
             'student_id' => 'required',
             'parallel_class' => 'required',
-            'email' => 'required|email',
-            'phone_number' => 'required',
+            // 'email' => 'required|email',
+            'phone_number' => 'required|starts_with:08',
+        ],[
+            'phone_number.starts_with' => 'Masukkan Nomor Telepon dengan benar sesuai petunjuk',
         ]);
 
 
@@ -123,7 +133,7 @@ class EventParticipantController extends Controller
             'name' => $request->name,
             'student_id' => $request->student_id,
             'parallel_class' => $request->parallel_class,
-            'email' => $request->email,
+            // 'email' => $request->email,
             'phone_number' => $request->phone_number
         ]);
 

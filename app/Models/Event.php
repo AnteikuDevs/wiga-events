@@ -32,7 +32,7 @@ class Event extends Model
     
     public function getDateFormatAttribute()
     {
-        return date('Y-m-d', strtotime($this->start_time)) == ($this->end_time? date('Y-m-d', strtotime($this->end_time)) : '')? formatDateIndo($this->start_time,false) : formatDateIndo($this->start_time) . ' - ' . formatDateIndo($this->end_time);
+        return date('Y-m-d', strtotime($this->start_time)) == ($this->end_time? date('Y-m-d', strtotime($this->end_time)) : date('Y-m-d', strtotime($this->start_time)))? formatDateIndo($this->start_time,false) : formatDateIndo($this->start_time, false) . ' - ' . formatDateIndo($this->end_time, false);
     }
 
     public function getTimeFormatAttribute()

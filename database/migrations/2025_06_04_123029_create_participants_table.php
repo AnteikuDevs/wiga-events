@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('student_id')->unique();
             $table->string('parallel_class');
-            $table->string('email');
+            $table->string('email')->nullable();
             $table->string('phone_number');
-            $table->string('certificate_number')->nullable();
+            $table->boolean('status_publish')->default(false);
             $table->string('type')->default('participant')->comment('participant, committee');
             $table->timestamps();
         });

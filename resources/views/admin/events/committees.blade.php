@@ -18,7 +18,7 @@
                         <th>NIM</th>
                         <th>Nama</th>
                         <th>Kelas</th>
-                        <th>Email</th>
+                        {{-- <th>Email</th> --}}
                         <th>No Telp</th>
                         <th>Status Kehadiran</th>
                         <th>#</th>
@@ -41,8 +41,8 @@
     <x-forms.input type="text" name="student_id" label="NIM"></x-forms.input>
     <x-forms.input type="text" name="name" label="Nama Lengkap"></x-forms.input>
     <x-forms.input type="text" name="parallel_class" label="Kelas"></x-forms.input>
-    <x-forms.input type="text" name="email" label="Email"></x-forms.input>
-    <x-forms.input type="text" name="phone_number" label="Nomor Telepon"></x-forms.input>
+    {{-- <x-forms.input type="text" name="email" label="Email"></x-forms.input> --}}
+    <x-forms.input type="text" name="phone_number" label="Nomor Telepon" placeholder="Contoh: 08123456789"></x-forms.input>
 
     <x-slot name="footer">
         <x-button dismiss-modal color="secondary">Batal</x-button>

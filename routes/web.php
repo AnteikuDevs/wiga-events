@@ -57,7 +57,7 @@ Route::middleware(['user.token','prevent-back'])->group(function () {
         Route::get('dashboard', function () {
             return view('admin.dashboard',[
                 'title' => 'Dashboard',
-                'events' => Event::latest()->get(),
+                'events' => Event::latest()->limit(3)->get(),
                 'js' => componentJS('admin/dashboard'),
                 'breadcrumb' => [
                     ['name' => 'Beranda', 'url' => route('admin.dashboard')],
@@ -119,5 +119,5 @@ Route::middleware(['user.token','prevent-back'])->group(function () {
 Route::redirect('', 'login');
 
 Route::get('/attendance_{token}', [EventController::class,'attendance'])->name('event.attendance');
+Route::get('/certificate/cert-{attendance_id}', [EventCertificateController::class,'index'])->name('event.certificate');
 Route::get('/{slug}', [EventController::class,'index'])->name('event');
-Route::get('/{slug}/certificate/{student_id}', [EventCertificateController::class,'index'])->name('event.certificate');

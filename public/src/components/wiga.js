@@ -979,7 +979,19 @@ const WigaForm = new class {
             } else {
                 el.value = '';
             }
+
+            if(el.type === 'select') {
+                $(el).val('').trigger('change');
+            }
+
+            if(el.type === 'file') {
+                $(el).val('').trigger('empty');
+            }
         });
+    }
+
+    errorReset(formElement) {
+        $(formElement).find('[data-error]').html('');
     }
 };
 
@@ -1079,6 +1091,10 @@ const WigaHttp = new class {
     
 
     handle(response, formSelector = '#WigaFormPage',successCallback = null, errorCallback = null){
+        if(formSelector)
+        {
+            WigaForm.errorReset(formSelector);
+        }
         if(response.errors && formSelector)
         {
             let errors = response.errors;
@@ -1105,6 +1121,10 @@ const WigaHttp = new class {
             if(response.status)
             {
                 successCallback(response)
+                if(formSelector)
+                {
+                    WigaForm.reset(formSelector);
+                }
             }else{
                 if(errorCallback)
                 {
@@ -1438,6 +1458,7 @@ class WigaUploadImage {
     bindEvents() {
         this.elements.browseBtn.on('click', () => this.elements.fileInput.click());
         this.elements.fileInput.on('change', (e) => { this.handleFiles(e.target.files); });
+        this.elements.fileInput.on('empty', (e) => { this.elements.fileInput.val('').trigger('change'); this.elements.uploadedFilesContainer.html(''); });
         this.elements.dropZone.on('dragover', (e) => { e.preventDefault(); e.stopPropagation(); this.elements.dropZone.addClass('border-primary'); });
         this.elements.dropZone.on('dragleave', (e) => { e.preventDefault(); e.stopPropagation(); this.elements.dropZone.removeClass('border-primary'); });
         this.elements.dropZone.on('drop', (e) => { e.preventDefault(); e.stopPropagation(); this.elements.dropZone.removeClass('border-primary'); this.handleFiles(e.originalEvent.dataTransfer.files); });

@@ -14,10 +14,15 @@ let WigaClass = Wiga.class({
                 { data: function(data){
                     return `<div class="img-fluid" wigaimage-lazyload="${WigaRoute.storageUrl(data.image_id)}">`
                 }},
-                { data: 'title' },
+                { data: function(data){ 
+
+                    let type = `<span class="badge badge-light-${data.type == 'offline' ? 'danger' : 'success'}">${data.type.toUpperCase()}</span>`
+
+                    return `<a href="${WigaRoute.url(data.slug)}">${data.title}</a><br>${type}`
+                }},
                 { data: 'description' },
                 { data: function(data){
-                    return data.start_time_format + ' s.d ' + (data.end_time_format ? data.end_time_format : 'Selesai')
+                    return '<strong>Tanggal:</strong> ' + data.date_format + ' <br> <strong>Pukul:</strong> ' + data.time_format
                 } },
                 { data: function(data){
                     return data.participants_count + ' Peserta'
@@ -26,25 +31,36 @@ let WigaClass = Wiga.class({
                     if(data.status_id == 1){
                         return `<span class="badge badge-light-danger">${data.status}</span>`
                     }else if(data.status_id == 2){
-                        return `<span class="badge badge-warning-success">${data.status}</span>`
+                        return `<span class="badge badge-light-success">${data.status}</span>`
                     }
                     return `<span class="badge badge-light-warning">${data.status}</span>`
                 } },
                 { data: function(data){
 
-                    if(data.status_id == 0){
+                    // if(data.status_id == 0){
 
                         const userActions = [
-                            { 
-                                text: '<span class="badge badge-secondary">Lihat</span>', 
+                            ...(data.status_publish == '0'? [{
+                                text: '<span class="badge badge-secondary">Salin Link Pendaftaran</span>', 
                                 events: {
                                     click: function(e) {
                                         e.preventDefault();
-                                        window.open(WigaRoute.url(data.slug), '_blank');
+                                        navigator.clipboard.writeText(WigaRoute.url(data.slug));
+                                            alert('Link berhasil disalin');
+                                        }
+                                    }
+                            }] : []),
+                            ...(data.status_id == '0' && data.status_publish == '0'? [{
+                                text: '<span class="badge badge-primary">Notifikasi Pengingat</span>', 
+                                events: {
+                                    click: function(e) {
+                                        e.preventDefault();
+                                        $wiga('#ModalNotification').attr('data-id',data.id);
+                                        $wiga('#ModalNotification').modal('show');
                                     }
                                 }
-                            },
-                            { 
+                            }] : []),
+                            ...(data.status_id == '1' && data.status_publish == '0'? [{
                                 text: '<span class="badge badge-primary">Generate Link Kehadiran</span>', 
                                 events: {
                                     click: function(e) {
@@ -52,26 +68,32 @@ let WigaClass = Wiga.class({
                                         WigaClass.generateAttendance(data.id)
                                     }
                                 }
-                            },
+                            }] : []),
                             { 
                                 text: '<span class="badge badge-light-info">Panitia Acara</span>',
-                                events: {
-                                    click: function(e) {
-                                        e.preventDefault();
-                                        WigaRoute.redirect('/admin/events/'+data.id+'/committees');
-                                    }
-                                }
+                                href: WigaRoute.url('/admin/events/'+data.id+'/committees')
+                                // events: {
+                                //     click: function(e) {
+                                //         e.preventDefault();
+                                //         WigaRoute.redirect('/admin/events/'+data.id+'/committees');
+                                //     }
+                                // }
                             },
                             { 
                                 text: '<span class="badge badge-light-warning">Peserta</span>',
-                                events: {
-                                    click: function(e) {
-                                        e.preventDefault();
-                                        WigaRoute.redirect('/admin/events/'+data.id+'/participants');
-                                    }
-                                }
+                                href: WigaRoute.url('/admin/events/'+data.id+'/participants')
+                                // events: {
+                                //     click: function(e) {
+                                //         e.preventDefault();
+                                //         WigaRoute.redirect('/admin/events/'+data.id+'/participants');
+                                //     }
+                                // }
                             },
-                            { 
+                        ];
+
+                        if(data.status_id == '0')
+                        {
+                            userActions.push({ 
                                 text: '<span class="badge badge-light-primary">Edit</span>', 
                                 events: {
                                     click: function(e) {
@@ -83,6 +105,14 @@ let WigaClass = Wiga.class({
                                         })
 
                                         $wiga('#ModalForm [name=title]').val(data.title);
+                                        $wiga('#ModalForm [name=type]').val(data.type).trigger('change');
+                                        if(data.type == 'online')
+                                        {
+                                            $wiga('#ModalForm [name=link]').val(data.link);
+                                        }else if(data.type == 'offline')
+                                        {
+                                            $wiga('#ModalForm [name=location]').val(data.location);
+                                        }
                                         $wiga('#ModalForm [name=description]').val(data.description);
                                         $wiga('#ModalForm [name=start_time]').val(WigaString.formatForDateTimeLocal(data.start_time));
                                         if(data.end_time)
@@ -96,7 +126,7 @@ let WigaClass = Wiga.class({
                                     }
                                 }
                             },
-                            { 
+                            {
                                 text: '<span class="badge badge-light-danger">Hapus</span>', 
                                 events: {
                                     click: function(e) {
@@ -104,27 +134,41 @@ let WigaClass = Wiga.class({
                                         $wiga('#ModalDelete').modal('show');
                                     }
                                 }
-                            },
-                        ];
+                            })
+                        }
+
+                        if(data.status_id != '0')
+                        {
+
+                            userActions.push({
+                                text: '<span class="badge badge-success">Publish Sertifikat</span>', 
+                                events: {
+                                    click: function(e) {
+                                        $wiga('#ModalConfirmPublish').attr('data-id',data.id);
+                                        $wiga('#ModalConfirmPublish').modal('show');
+                                    }
+                                }
+                            })
+
+                        }
 
                         return WigaComponent.dropdown({
                             triggerContent: '<i class="fa-duotone fa-gear"></i>',
                             color: 'light-primary',
                             items: userActions,
-                            
                         });
-                    }
+                    // }
 
-                    return WigaComponent.button({
-                        color: 'light-primary',
-                        text: 'Preview',
-                        events: {
-                            click: function(e) {
-                                e.preventDefault();
-                                window.open(WigaRoute.url(data.slug), '_blank');
-                            }
-                        }
-                    })
+                    // return WigaComponent.button({
+                    //     color: 'light-primary',
+                    //     text: 'Preview',
+                    //     events: {
+                    //         click: function(e) {
+                    //             e.preventDefault();
+                    //             window.open(WigaRoute.url(data.slug), '_blank');
+                    //         }
+                    //     }
+                    // })
                 } }
             ],
             pageLength: 10,
@@ -199,6 +243,43 @@ let WigaClass = Wiga.class({
             })
         });
     },
+    async publish()
+    {
+
+        let response = await WigaHttp.post('/admin/events/'+$wiga('#ModalConfirmPublish').attr('data-id')+'/publish');
+        WigaHttp.handle(response,'#ModalConfirmPublish form',function(res) {
+            $wiga('#ModalConfirmPublish').modal('hide');
+            WigaClass.render();
+            WigaNotify.showInline('#wiga-alert',{
+                type: 'success',
+                content: res.message,
+            })
+        },function(res){
+            WigaNotify.showInline('#ModalConfirmPublishAlert',{
+                type: 'danger',
+                content: res.message,
+            })
+        });
+    },
+    async sendNotification()
+    {
+
+        let response = await WigaHttp.post('/admin/events/'+$wiga('#ModalNotification').attr('data-id')+'/send-notification');
+        WigaHttp.handle(response,'#ModalNotification form',function(res) {
+            $wiga('#ModalNotification').modal('hide');
+            WigaClass.render();
+            WigaNotify.showInline('#wiga-alert',{
+                type: 'success',
+                content: res.message,
+            })
+        },function(res){
+            $wiga('#ModalNotification').modal('hide');
+            WigaNotify.showInline('#wiga-alert',{
+                type: 'danger',
+                content: res.message,
+            })
+        });
+    },
     async generateAttendance(id)
     {
 
@@ -251,6 +332,16 @@ $wiga('#ModalDelete form').on('submit',function(e){
     $wiga('#ModalDelete [type="submit"]').indicator(WigaClass.delete());    
 })
 
+$wiga('#ModalConfirmPublish form').on('submit',function(e){
+    e.preventDefault();
+    $wiga('#ModalConfirmPublish [type="submit"]').indicator(WigaClass.publish());    
+})
+
+$wiga('#ModalNotification form').on('submit',function(e){
+    e.preventDefault();
+    $wiga('#ModalNotification [type="submit"]').indicator(WigaClass.sendNotification());    
+})
+
 $wiga('#ModalForm [name=until_finish]').on('change',function(e){
     // $wiga(this).val(this.checked ? 1 : 0);
     if(this.checked){
@@ -259,6 +350,14 @@ $wiga('#ModalForm [name=until_finish]').on('change',function(e){
     }else{
         $wiga('#ModalForm [name=end_time]').parents('.form-floating').removeClass('d-none')
     }
+})
+
+$wiga('#ModalForm [name=type]').on('change',function(e){
+    // $wiga(this).val(this.checked ? 1 : 0);
+    let typeValue = this.value
+    $wiga('#ModalForm [data-content] textarea').val('')
+    $wiga('#ModalForm [data-content]').addClass('d-none')
+    $wiga('#ModalForm [data-content='+typeValue+']').removeClass('d-none')
 })
 
 $wiga('#ModalForm').on('hidden.bs.modal', function (e) {

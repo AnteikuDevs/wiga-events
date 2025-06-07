@@ -38,7 +38,7 @@
 
     <x-forms.input type="upload-image" name="image" label="Template Sertifikat"></x-forms.input>
     <x-alert type="info" :dismissible="false">
-        <strong>Perhatian:</strong> Pastikan ukuran sertifikat adalah A4 (Lanscape)
+        <strong>Perhatian:</strong> Pastikan ukuran sertifikat adalah A5 (Lanscape)
     </x-alert>
     <x-forms.input type="select" name="event" label="Pilih Acara"></x-forms.input>
     <x-forms.input type="select" name="type" label="Sertifikat Untuk">

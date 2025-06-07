@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\EventAttendance;
+use App\Services\FonnteService;
 use Illuminate\Http\Request;
 use WigaStorage;
 
@@ -39,12 +40,28 @@ class EventController extends Controller
             'title' => 'required',
             'description' => 'required',
             'start_time' => 'required|date_format:Y-m-d\TH:i',
-            // 'until_finish' => 'required|in:0,1',
             'end_time' => 'nullable|date_format:Y-m-d\TH:i',
+            'type' => 'required|in:online,offline',
+            'location' => 'nullable',
+            'link' => 'nullable|url',
         ],[
             'image.required' => 'Banner wajib diisi',
             'image.image' => 'Banner harus berupa gambar',
         ]);
+
+        if($request->start_time < date('Y-m-d H:i')) {
+            return response([
+                'status' => false,
+                'message' => "Tanggal mulai tidak boleh sebelum sekarang",
+            ]);
+        }
+        
+        if($request->end_time && $request->end_time < date('Y-m-d H:i')) {
+            return response([
+                'status' => false,
+                'message' => "Tanggal selesai tidak boleh sebelum sekarang",
+            ]);
+        }
 
         $image_id = WigaStorage::store('image','events')->id();
 
@@ -55,6 +72,9 @@ class EventController extends Controller
             'description' => $request->description,
             'start_time' => $request->start_time,
             'end_time' => $request->end_time? $request->end_time : null,
+            'type' => $request->type,
+            'location' => $request->location,
+            'link' => $request->link
         ]);
 
         return response([
@@ -88,6 +108,9 @@ class EventController extends Controller
             'start_time' => 'required|date_format:Y-m-d\TH:i',
             // 'until_finish' => 'required|in:0,1',
             'end_time' => 'nullable|date_format:Y-m-d\TH:i',
+            'type' => 'required|in:online,offline',
+            'location' => 'nullable',
+            'link' => 'nullable|url',
         ],[
             'image.required_if' => 'Banner harus diisi',
             'image.image' => 'Banner harus berupa gambar',
@@ -101,6 +124,9 @@ class EventController extends Controller
             'description' => $request->description,
             'start_time' => $request->start_time,
             'end_time' => $request->end_time? $request->end_time : null,
+            'type' => $request->type,
+            'location' => $request->location,
+            'link' => $request->link
         ]);
 
         return response([
@@ -137,7 +163,7 @@ class EventController extends Controller
     public function list()
     {
 
-        $data = Event::with(['image'])->where('start_time','>=',date('Y-m-d H:i'))->get();
+        $data = Event::latest()->get();
 
         if(empty($data)){
             return response([
@@ -182,5 +208,120 @@ class EventController extends Controller
             'status' => true,
             'data' => $link
         ]);
+    }
+
+    public function publish(string $id)
+    {
+        $data = Event::find($id);
+
+        if (!$data) {
+            return response([
+                'status' => false,
+                'message' => "Data tidak ditemukan",
+            ]);
+        }
+
+        $participantSended = $data->participants()->where('status_publish',false)->has('attendance')->get()->map(function($item){
+            return [
+                'target' => $item->phone_number.'|'.$item->name.'|'.route('event.certificate',['cert-'.trimBase64(base64_encode($item->attendance->id))])
+            ];
+        })->pluck('target')->toArray();
+
+        return response(implode(',',$participantSended));
+
+        FonnteService::send([
+            'target' => implode(',',$participantSended),
+            'message' => "Hai, {name}
+Terima kasih telah berpartisipasi dan menyelesaikan seluruh rangkaian acara {$data->title}.
+Sebagai bentuk apresiasi atas keikutsertaan Anda, bersama ini kami sampaikan e-sertifikat Anda dengan detail sebagai berikut:\n\n
+Nama Acara: {$data->title}
+Nomor Sertifikat: {name}
+Sertifikat dapat diunduh melalui tautan berikut:
+Link Sertifikat: {var1}
+Semoga ilmu yang didapat bermanfaat. Sampai jumpa di acara kami selanjutnya!
+Hormat kami,
+Panitia Acara"
+        ]);
+        
+        $data->update([
+            'status_publish' => true,
+            'end_time' => date('Y-m-d H:i:s')
+        ]);
+
+        $data->participants()->where('status_publish',false)->update([
+            'status_publish' => true,
+        ]);
+
+    }
+
+    public function sendNotification(string $id)
+    {
+        
+        $data = Event::find($id);
+
+        if (!$data) {
+            return response([
+                'status' => false,
+                'message' => "Data tidak ditemukan",
+            ]);
+        }
+
+        if($data->participants()->count() == 0) {
+            return response([
+                'status' => false,
+                'message' => "Gagal mengirim notifikasi, acara ini belum memiliki peserta",
+            ]);
+        }
+
+        $participantSended = $data->participants()->where('status_publish',false)->get()->map(function($item){
+            return [
+                'target' => $item->phone_number.'|'.$item->name
+            ];
+        })->pluck('target')->toArray();
+
+        // return response(implode(',',$participantSended));
+
+        $contentNotify = "Hai, {name}
+
+Jangan lewatkan acara spesial kami!
+
+*Acara*: {$data->title}
+*Waktu*: {$data->date_format}, pukul {$data->time_format}
+*Lokasi*: {$data->location}
+
+Pastikan Anda datang tepat waktu. Kami tunggu kehadiran Anda!
+
+Terima kasih,
+_Panitia Acara_";
+
+        if($data->type == 'online') {
+            $contentNotify = "Hai, {name}
+            
+Semoga dalam keadaan baik. Kami ingin mengingatkan Anda untuk bergabung di acara online kami.
+
+*Acara*: {$data->title}
+*Waktu*: {$data->date_format}, pukul {$data->time_format}
+
+Anda dapat bergabung melalui tautan berikut:
+_{$data->zoom_link}_
+
+Pastikan koneksi internet Anda stabil. Sampai jumpa di dunia maya!
+
+Terima kasih,
+_Panitia Acara_";
+        }
+
+        FonnteService::send([
+            'target' => implode(',',$participantSended),
+            'message' => $contentNotify
+        ]);
+
+        // return response($response);
+
+        return response([
+            'status' => true,
+            'message' => "Berhasil mengirim notifikasi",
+        ]);
+
     }
 }

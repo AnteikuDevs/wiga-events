@@ -24,6 +24,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if($events->count() == 0)
+                                        <tr>
+                                            <td colspan="3" class="text-center">Belum ada acara terbaru</td>
+                                        </tr>
+                                    @endif
                                     @foreach($events as $event)
     
                                     <tr>

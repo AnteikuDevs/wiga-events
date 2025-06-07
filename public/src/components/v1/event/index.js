@@ -36,7 +36,7 @@ let WigaClass = Wiga.class({
                                         <i class="fa-solid fa-clock fa-fw fa-xl me-3"></i>
                                         <div>
                                             <h6 class="mb-0 fw-bold">Waktu</h6>
-                                            <p class="mb-0 text-muted">${data.time_format} WIB</p>
+                                            <p class="mb-0 text-muted">${data.time_format}</p>
                                         </div>
                                     </div>
                                 </div>

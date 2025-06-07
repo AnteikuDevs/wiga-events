@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\EventAttendance;
+use App\Models\ParticipantAttendance;
 use App\Models\ParticipantCertificate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -11,51 +13,47 @@ use WigaStorage;
 
 class EventCertificateController extends Controller
 {
-    public function index(string $slug,string $studentId)
+    public function index(Request $request,string $id)
     {
-
-        $event = Event::where('slug', $slug)->firstOrFail();
+        $dataAttendance = ParticipantAttendance::findOrFail(str_replace('cert-', '', base64_decode($id)));
         
-        $data = $event->participants()->where('student_id', $studentId)->firstOrFail();
+        $data = $dataAttendance->participant;
 
-        if($data->attendance)
+        $event = $dataAttendance->event;
+
+        $template = $event->certificates()->where('participant_type', $data->type)->first();
+
+        if(!$template)
         {
-            $template = $event->certificates()->where('participant_type', $data->type)->firstOrFail();
-
-            $cert = ParticipantCertificate::where([
-                'event_id' => $event->id,
-                'participant_id' => $data->id,
-                'certificate_template_id' => $template->id
-            ])->first();
-
-            if(!$cert)
-            {
-                
-                $cert = new ParticipantCertificate();
-                $cert->event_id = $event->id;
-                $cert->participant_id = $data->id;
-                $cert->certificate_template_id = $template->id;
-                $cert->participant_type = $data->type;
-                $cert->certificate_number = $template->certificate_number;
-                $cert->save();
-            }
-            
-            return $this->renderCert($cert);
-
+            return view('event.cert-not-published');
         }
 
+        $cert = ParticipantCertificate::where([
+            'event_id' => $event->id,
+            'participant_id' => $data->id,
+            'certificate_template_id' => $template->id
+        ])->first();
+
+        if(!$cert)
+        {
+            
+            $cert = new ParticipantCertificate();
+            $cert->event_id = $event->id;
+            $cert->participant_id = $data->id;
+            $cert->certificate_template_id = $template->id;
+            $cert->participant_type = $data->type;
+            $cert->certificate_number = $template->certificate_number;
+            $cert->save();
+        }
+
+        $update = $request->input('update') == '1' ? true : false;
+        
+        return $this->renderCert($cert,$update);
         
     }
 
-    private function renderCert(ParticipantCertificate $certificate)
+    private function renderCert(ParticipantCertificate $certificate,$update = false)
     {
-
-        if($certificate->certificate_file_id)
-        {
-            
-            return redirect()->route('file.show', [$certificate->certificate_file_id]);
-
-        }
 
         $pdf = new WigaPDF('L', 'mm', 'A5','Sertifikat '.$certificate->participant->name . ' : '.$certificate->event->title);
         $pdf->AddPage();
@@ -75,16 +73,22 @@ class EventCertificateController extends Controller
 
         $pdfOutput = $pdf->Output('S');
 
-        Storage::disk('public')->put('certificate/'.$certificate->event_id.'/'.$certificate->participant_id.'.pdf', $pdfOutput);
+        if(!$certificate->certificate_file_id || $update)
+        {
+            Storage::disk('public')->put('certificate/'.$certificate->event_id.'/'.$certificate->participant_id.'.pdf', $pdfOutput);
+    
+            $certificateFileId = WigaStorage::save('storage/certificate/'.$certificate->event_id, $certificate->participant_id.'.pdf', 'certificate/'.$certificate->event_id)->id();        
+    
+            $certificate->certificate_file_id = $certificateFileId;
+            $certificate->save();
+        }
 
-        $certificateFileId = WigaStorage::save('storage/certificate/'.$certificate->event_id, $certificate->participant_id.'.pdf', 'certificate/'.$certificate->event_id)->id();        
 
-        $certificate->certificate_file_id = $certificateFileId;
-        $certificate->save();
+        return redirect()->route('file.show', [$certificate->certificate_file_id]);
 
-        return response($pdf->Output('S', $pdf->filename))
-        ->header('Content-Type', 'application/pdf')
-        ->header('Content-Disposition', 'inline; filename="'.$pdf->filename.'"');
+        // return response($pdf->Output('S', $pdf->filename))
+        // ->header('Content-Type', 'application/pdf')
+        // ->header('Content-Disposition', 'inline; filename="'.$pdf->filename.'"');
 
     }
 
