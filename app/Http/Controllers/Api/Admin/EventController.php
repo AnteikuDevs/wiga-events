@@ -303,7 +303,7 @@ Semoga dalam keadaan baik. Kami ingin mengingatkan Anda untuk bergabung di acara
 *Waktu*: {$data->date_format}, pukul {$data->time_format}
 
 Anda dapat bergabung melalui tautan berikut:
-_{$data->zoom_link}_
+_{$data->link}_
 
 Pastikan koneksi internet Anda stabil. Sampai jumpa di dunia maya!
 
