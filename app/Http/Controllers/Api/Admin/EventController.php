@@ -223,7 +223,7 @@ class EventController extends Controller
 
         $participantSended = $data->participants()->where('status_publish',false)->has('attendance')->get()->map(function($item){
             return [
-                'target' => $item->phone_number.'|'.$item->name.'|'.route('event.certificate',['cert-'.trimBase64(base64_encode($item->attendance->id))])
+                'target' => $item->phone_number.'|'.$item->name.'|'.route('event.certificate',[trimBase64(base64_encode($item->attendance->id))])
             ];
         })->pluck('target')->toArray();
 
