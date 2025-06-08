@@ -227,6 +227,13 @@ class EventController extends Controller
             ];
         })->pluck('target')->toArray();
 
+        if(empty($participantSended)){
+            return response([
+                'status' => false,
+                'message' => "Tidak ada peserta yang belum terkirim sertifikat",
+            ]);
+        }
+
         // return response(implode(',',$participantSended));
 
         FonnteService::send([
