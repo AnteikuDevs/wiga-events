@@ -239,13 +239,16 @@ class EventController extends Controller
         FonnteService::send([
             'target' => implode(',',$participantSended),
             'message' => "Hai, {name}
+
 Terima kasih telah berpartisipasi dan menyelesaikan seluruh rangkaian acara {$data->title}.
+
 Sebagai bentuk apresiasi atas keikutsertaan Anda, bersama ini kami sampaikan e-sertifikat Anda dengan detail sebagai berikut:\n\n
-Nama Acara: {$data->title}
-Nomor Sertifikat: {name}
+*Nama Acara*: {$data->title}
 Sertifikat dapat diunduh melalui tautan berikut:
-Link Sertifikat: {var1}
+*Link Sertifikat*: _{var1}_
+
 Semoga ilmu yang didapat bermanfaat. Sampai jumpa di acara kami selanjutnya!
+
 Hormat kami,
 Panitia Acara"
         ]);
