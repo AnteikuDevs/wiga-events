@@ -227,7 +227,7 @@ class EventController extends Controller
             ];
         })->pluck('target')->toArray();
 
-        return response(implode(',',$participantSended));
+        // return response(implode(',',$participantSended));
 
         FonnteService::send([
             'target' => implode(',',$participantSended),
