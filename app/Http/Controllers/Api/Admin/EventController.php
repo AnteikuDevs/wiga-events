@@ -252,6 +252,11 @@ Panitia Acara"
             'status_publish' => true,
         ]);
 
+        return response([
+            'status' => true,
+            'message' => "Berhasil mengirim sertifikat peserta",
+        ]);
+
     }
 
     public function sendNotification(string $id)
