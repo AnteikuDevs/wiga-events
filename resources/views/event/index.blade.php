@@ -19,10 +19,10 @@
     <x-forms.input type="text" name="name" label="Nama Lengkap"></x-forms.input>
     <x-forms.input type="text" name="parallel_class" label="Kelas"></x-forms.input>
     {{-- <x-forms.input type="text" name="email" label="Email"></x-forms.input> --}}
-    <x-forms.input type="text" name="phone_number" label="Nomor Telepon" placeholder="Contoh: 08123456789"></x-forms.input>
+    <x-forms.input type="text" name="phone_number" label="Nomor Whatsapp" placeholder="Contoh: 08123456789"></x-forms.input>
 
     <x-alert type="info" :dismissible=false>
-        <strong>Perhatian:</strong> Pastikan Nomor Telepon yang Anda cantumkan sudah benar. Sertifikat kelulusan/partisipasi akan dikirim melalui nomor telepon ini.
+        <strong>Perhatian:</strong> Pastikan Nomor Whatsapp yang Anda cantumkan sudah benar. Sertifikat kelulusan/partisipasi akan dikirim melalui whatsapp nomor ini.
     </x-alert>
 
     <x-slot name="footer">
