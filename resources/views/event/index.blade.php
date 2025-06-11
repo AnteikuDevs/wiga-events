@@ -7,6 +7,14 @@
             <small class="text-muted d-block text-center">Memuat ... </small>
         </div>
     </div>
+    <div class="d-flex align-items-center justify-content-center justify-content-md-between flex-column flex-md-row py-3 py-lg-6 container-fluid">
+        {{-- <div class="text-dark mx-auto">
+            &copy; <a href="https://instagram.com/teguhdevs" target="_blank" class="text-danger"><strong>AnteikuDevs</strong></a>. All rights reserved.
+        </div> --}}
+        <div class="text-dark dark:text-light mx-auto">
+            Made by ❤️ <a href="https://instagram.com/anteikudevs" target="_blank" class="text-danger">AnteikuDevs</a>
+        </div>
+    </div>
 </div>
 
 <x-modal 
