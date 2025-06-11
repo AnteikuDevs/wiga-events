@@ -20,10 +20,12 @@ class EventController extends Controller
             $query->filterLike($search, ['title','description']);
         }, [
             'id',
+            null,
             'title',
-            'start_date',
-            'end_date',
-            'description'
+            'description',
+            'start_time',
+            'participants_count',
+            'status'
         ]);
 
         return response($result);
@@ -240,9 +242,9 @@ class EventController extends Controller
             'target' => implode(',',$participantSended),
             'message' => "Hai, {name}
 
-Terima kasih telah berpartisipasi dan menyelesaikan seluruh rangkaian acara {$data->title}.
+Terima kasih telah berpartisipasi dan menyelesaikan seluruh rangkaian acara {$data->title}.\n
 
-Sebagai bentuk apresiasi atas keikutsertaan Anda, bersama ini kami sampaikan e-sertifikat Anda dengan detail sebagai berikut:\n\n
+Sebagai bentuk apresiasi atas keikutsertaan Anda, bersama ini kami sampaikan e-sertifikat Anda dengan detail sebagai berikut:
 *Nama Acara*: {$data->title}
 Sertifikat dapat diunduh melalui tautan berikut:
 *Link Sertifikat*: _{var1}_

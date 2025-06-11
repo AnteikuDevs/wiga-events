@@ -14,7 +14,7 @@
     </div>
     <div class="separator my-2"></div>
     <div class="menu-item px-5">
-        <a href="#" class="menu-link px-5">Profil</a>
+        <a href="{{ route('admin.profil') }}" class="menu-link px-5">Profil</a>
     </div>
     {{-- <div class="menu-item px-5">
         <a href="#" class="menu-link px-5">

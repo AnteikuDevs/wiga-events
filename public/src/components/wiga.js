@@ -1112,12 +1112,14 @@ const WigaHttp = new class {
             {
                 let parentSelector = $(formSelector)
                 parentSelector.find('[data-error]').html('')
+                // parentSelector.find('[name]').removeClass('is-invalid')
 
                 $.each(errors, function (i, err) {
                     let content = ''
                     $.each(err, function (j, key) {
                         content += `<span>${key}</span>`
                     })
+                    // parentSelector.find('[name="' + i + '"]').addClass('is-invalid')
                     parentSelector.find('[data-error="' + i + '"]').html(content)
                 })
             }

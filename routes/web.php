@@ -66,6 +66,18 @@ Route::middleware(['user.token','prevent-back'])->group(function () {
             ]);
         })->name('dashboard');
         
+        Route::get('profil', function () {
+            return view('admin.profil',[
+                'title' => 'Profile',
+                'events' => Event::latest()->limit(3)->get(),
+                'js' => componentJS('admin/profil'),
+                'breadcrumb' => [
+                    ['name' => 'Beranda', 'url' => route('admin.profil')],
+                    ['name' => 'Profil', 'url' => null]
+                ]
+            ]);
+        })->name('profil');
+        
         Route::get('events', function () {
             return view('admin.events.index',[
                 'title' => 'Acara',

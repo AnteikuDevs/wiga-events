@@ -49,7 +49,7 @@ let WigaClass = Wiga.class({
                                     }
                                 }
                             }] : []),
-                            ...(data.status_publish == '0'? [{
+                            ...(data.status_id != '2' && data.status_publish == '0'? [{
                                 text: '<span class="badge badge-secondary">Salin Link Pendaftaran</span>', 
                                 events: {
                                     click: function(e) {
