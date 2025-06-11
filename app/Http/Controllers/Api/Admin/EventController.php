@@ -25,7 +25,7 @@ class EventController extends Controller
             'description',
             'start_time',
             'participants_count',
-            'status'
+            'end_time'
         ]);
 
         return response($result);
