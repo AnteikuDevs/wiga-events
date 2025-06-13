@@ -44,6 +44,10 @@ class EventCertificateController extends Controller
             $cert->participant_type = $data->type;
             $cert->certificate_number = $template->certificate_number;
             $cert->save();
+        }else{
+            $cert->update([
+                'certificate_number' => $template->certificate_number
+            ]);
         }
 
         $update = $request->input('update') == '1' ? true : false;
