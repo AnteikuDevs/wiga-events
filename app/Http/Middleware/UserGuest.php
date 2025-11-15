@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserGuest
@@ -23,6 +24,7 @@ class UserGuest
             $user = User::findToken($wigaevents_id);
             if(!empty($user))
             {
+                Auth::login($user);
                 return redirect()->route('redirect');
             }
         }

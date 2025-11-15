@@ -77,18 +77,18 @@ class EventCertificateController extends Controller
 
         $pdfOutput = $pdf->Output('S');
 
-        // if(!$certificate->certificate_file_id || $update)
-        // {
-        //     Storage::disk('public')->put('certificate/'.$certificate->event_id.'/'.$certificate->participant_id.'.pdf', $pdfOutput);
+        if(!$certificate->certificate_file_id || $update)
+        {
+            Storage::disk('public')->put('certificate/'.$certificate->event_id.'/'.$certificate->participant_id.'.pdf', $pdfOutput);
     
-        //     $certificateFileId = WigaStorage::save('storage/certificate/'.$certificate->event_id, $certificate->participant_id.'.pdf', 'certificate/'.$certificate->event_id)->id();        
+            $certificateFileId = WigaStorage::save('storage/certificate/'.$certificate->event_id, $certificate->participant_id.'.pdf', 'certificate/'.$certificate->event_id)->id();        
     
-        //     $certificate->certificate_file_id = $certificateFileId;
-        //     $certificate->save();
-        // }
+            $certificate->certificate_file_id = $certificateFileId;
+            $certificate->save();
+        }
 
 
-        // return redirect()->route('file.show', [$certificate->certificate_file_id]);
+        return redirect()->route('file.show', [$certificate->certificate_file_id]);
 
         return response($pdf->Output('S', $pdf->filename))
         ->header('Content-Type', 'application/pdf')

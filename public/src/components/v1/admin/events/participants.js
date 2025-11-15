@@ -53,8 +53,8 @@ let WigaClass = Wiga.class({
                         },
                     ];
 
-                    if(data.attendance)
-                    {
+                    // if(data.attendance)
+                    // {
                         userActions.push({
                             text: '<span class="badge badge-light-warning">Cetak Sertifikat</span>', 
                             href: WigaRoute.url('/certificate/cert-'+WigaString.rtrim(btoa(data.attendance.id),'=')),
@@ -64,7 +64,7 @@ let WigaClass = Wiga.class({
                             //     }
                             // }
                         });
-                    }
+                    // }
 
                     return WigaComponent.dropdown({
                         triggerContent: '<i class="fa-duotone fa-gear"></i>',

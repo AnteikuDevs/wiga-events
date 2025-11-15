@@ -69,7 +69,6 @@ Route::middleware(['user.token','prevent-back'])->group(function () {
         Route::get('profil', function () {
             return view('admin.profil',[
                 'title' => 'Profile',
-                'events' => Event::latest()->limit(3)->get(),
                 'js' => componentJS('admin/profil'),
                 'breadcrumb' => [
                     ['name' => 'Beranda', 'url' => route('admin.profil')],
