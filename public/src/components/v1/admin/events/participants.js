@@ -53,18 +53,18 @@ let WigaClass = Wiga.class({
                         },
                     ];
 
-                    // if(data.attendance)
-                    // {
+                    if(data.attendance)
+                    {
                         userActions.push({
                             text: '<span class="badge badge-light-warning">Cetak Sertifikat</span>', 
-                            href: WigaRoute.url('/certificate/cert-'+WigaString.rtrim(btoa(data.attendance.id),'=')),
+                            href: WigaRoute.url('/certificate/cert-'+WigaString.rtrim(btoa(data.id),'=')),
                             // events: {
                             //     click: function(e) {
                             //         WigaRoute.redirect(data.event.slug+'/certificate/'+data.student_id);
                             //     }
                             // }
                         });
-                    // }
+                    }
 
                     return WigaComponent.dropdown({
                         triggerContent: '<i class="fa-duotone fa-gear"></i>',

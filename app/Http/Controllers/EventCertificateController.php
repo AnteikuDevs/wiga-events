@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\EventAttendance;
+use App\Models\Participant;
 use App\Models\ParticipantAttendance;
 use App\Models\ParticipantCertificate;
 use Illuminate\Http\Request;
@@ -15,11 +16,9 @@ class EventCertificateController extends Controller
 {
     public function index(Request $request,string $id)
     {
-        $dataAttendance = ParticipantAttendance::findOrFail(str_replace('cert-', '', base64_decode($id)));
+        $data = Participant::findOrFail(str_replace('cert-', '', base64_decode($id)));
         
-        $data = $dataAttendance->participant;
-
-        $event = $dataAttendance->event;
+        $event = $data->event;
 
         $template = $event->certificates()->where('participant_type', $data->type)->first();
 
