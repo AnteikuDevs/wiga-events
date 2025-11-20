@@ -11,7 +11,7 @@
     </div>
     <div id="wiga-alert"></div>
     <form action="" method="post" id="WigaFormPage">
-        <x-forms.input type="text" name="student_id" label="NIM"></x-forms.input>
+        <x-forms.input type="text" name="student_id" label="Email"></x-forms.input>
         <x-button type="submit" color="gradient-primary" size="" block>Hadir</x-button>
     </form>
 </template>

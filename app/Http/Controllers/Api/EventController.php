@@ -72,6 +72,9 @@ class EventController extends Controller
         $request->validate([
             'token' => 'required|exists:event_attendances,token',
             'student_id' => 'required|exists:participants,student_id'
+        ],[
+            'student_id.required' => 'Masukkan Email yang sudah di daftarkan sebelumnya',
+            'student_id.exists' => 'Email tidak ditemukan pada pendaftaran event ini',
         ]);
 
         $cekToken = EventAttendance::where('token', $request->token)->first();
@@ -84,7 +87,6 @@ class EventController extends Controller
         }
 
         $cekPendaftaran = $cekToken->event->participants()->where('student_id', $request->student_id)->first();
-
         if (!$cekPendaftaran) {
             return response([
                 'status' => false,
