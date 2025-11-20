@@ -40,7 +40,7 @@ let WigaClass = Wiga.class({
                     // if(data.status_id == 0){
 
                         const userActions = [
-                            ...(data.status_id == '1' && data.status_publish == '0'? [{
+                            ...([{
                                 text: '<span class="badge badge-primary">Generate Link Kehadiran</span>', 
                                 events: {
                                     click: function(e) {
@@ -48,7 +48,7 @@ let WigaClass = Wiga.class({
                                         WigaClass.generateAttendance(data.id)
                                     }
                                 }
-                            }] : []),
+                            }]),
                             ...(data.status_id != '2' && data.status_publish == '0'? [{
                                 text: '<span class="badge badge-secondary">Salin Link Pendaftaran</span>', 
                                 events: {
