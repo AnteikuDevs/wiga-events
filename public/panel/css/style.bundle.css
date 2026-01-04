@@ -46,6 +46,8 @@
   --bs-font-sans-serif: Poppins, Helvetica, "sans-serif";
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
+  --gradient-start: #0061ff;
+  --gradient-end: #60efff;
   --bs-body-font-family: var(--bs-font-sans-serif);
   --bs-body-font-size: 1rem;
   --bs-body-font-weight: 400;
@@ -6058,6 +6060,92 @@ textarea.form-control-lg {
     border-radius: 0;
   }
 }
+/* Menimpa Backdrop (Latar Belakang) */
+.modal-backdrop.show {
+    opacity: 0.7;
+    background-color: #1e293b; /* Slate 900 */
+    backdrop-filter: blur(8px); /* Efek Glassmorphism */
+}
+
+/* Menimpa Container Utama Modal */
+.modal-content {
+    border: none !important;
+    border-radius: 28px !important; /* Radius besar yang modern */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+    overflow: hidden;
+}
+
+/* Menimpa Bagian Body Modal */
+.modal-body {
+    padding: 3rem 2rem !important;
+}
+
+/* Menimpa Tipografi (Jika menggunakan h4 di dalam modal) */
+.modal-body h4 {
+    color: #1e293b;
+    font-weight: 800 !important;
+    font-size: 1.5rem;
+    margin-top: 1rem;
+}
+
+/* Menimpa Tipografi (Jika menggunakan p di dalam modal) */
+.modal-body p {
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+/* Menimpa Tombol Primary di dalam Modal */
+.modal-body .btn-primary {
+    background-color: #0061ff !important;
+    border: none !important;
+    /* padding: 1rem !important; */
+    border-radius: 16px !important;
+    font-weight: 700 !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 97, 255, 0.3) !important;
+    transition: all 0.2s ease !important;
+}
+
+.modal-body .btn-primary:hover {
+    background-color: #0056e0 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 15px 20px -3px rgba(0, 97, 255, 0.4) !important;
+}
+
+/* Animasi Entry (Slight Zoom) */
+.modal.fade .modal-dialog {
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal.show .modal-dialog {
+    transform: scale(1);
+}
+
+/* Efek Guncangan Halus saat User klik di luar modal */
+.modal-static .modal-dialog {
+    animation: modalStaticBounce 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* Animasi Transformasi */
+@keyframes modalStaticBounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    30% {
+        transform: scale(1.03); /* Membesar sedikit */
+    }
+    60% {
+        transform: scale(0.98); /* Mengecil sedikit */
+    }
+}
+
+/* Optional: Tambahkan bayangan biru yang bersinar sesaat */
+.modal-static .modal-content {
+    box-shadow: 0 0 30px rgba(0, 97, 255, 0.2) !important;
+    transition: box-shadow 0.3s ease;
+}
+
 .tooltip {
   position: absolute;
   z-index: 1080;
@@ -47357,4 +47445,259 @@ wigatable-toolbar {
 
 .dataTables_wrapper .table-responsive {
   overflow: unset;
+}
+
+
+    /* Container Overlay (Latar Belakang Gelap/Blur) */
+#wiga-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(30, 41, 59, 0.7); /* Dark Slate dengan transparansi */
+    backdrop-filter: blur(8px); /* Efek blur modern */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Box Modal Utama */
+#wiga-modal {
+    background: #ffffff;
+    width: 90%;
+    max-width: 400px;
+    padding: 2.5rem;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transform: translateY(0);
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Judul Modal */
+#wiga-modal h4 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    color: #1e293b;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+}
+
+/* Deskripsi Modal */
+#wiga-modal p {
+    color: #64748b;
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+/* Tombol Tutup Kustom */
+#wiga-modal .close-btn {
+    background-color: #0061ff; /* Biru tema Anda */
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    width: 100%;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 97, 255, 0.3);
+    cursor: pointer;
+}
+
+#wiga-modal .close-btn:hover {
+    background-color: #0056e0;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 97, 255, 0.4);
+}
+
+#wiga-modal .close-btn:active {
+    transform: translateY(0);
+}
+
+/* Animasi Entry */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(30px) scale(0.9); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+    }
+}
+
+
+.bg-primary-gradient {
+    background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%) !important;
+    color: white !important;
+}
+
+/* Efek Hover untuk Tombol yang menggunakan gradasi ini */
+.btn.bg-primary-gradient {
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 1;
+}
+
+.btn.bg-primary-gradient:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+    box-shadow: 0 10px 20px rgba(0, 97, 255, 0.3);
+    color: white !important;
+}
+
+.btn.bg-primary-gradient:active {
+    transform: translateY(0);
+}
+
+/* Utility Shadow untuk gradasi */
+.shadow-primary-gradient {
+    box-shadow: 0 10px 25px -5px rgba(0, 97, 255, 0.4) !important;
+}
+
+/* Container Utama */
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--multiple {
+    background-color: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    min-height: 45px !important;
+    transition: all 0.3s ease;
+    padding-top: 5px;
+}
+
+/* Efek Fokus (Saat Select di klik) */
+.select2-container--default.select2-container--focus .select2-selection--single,
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+    border-color: #7c4dff !important;
+    box-shadow: 0 0 0 4px rgba(124, 77, 255, 0.1) !important;
+}
+
+/* Styling Multiple Select (Tag/Chips) */
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #f1f5f9 !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #334155 !important;
+    border-radius: 8px !important;
+    padding: 4px 10px !important;
+    margin-top: 0px !important;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+/* Tombol Hapus Tag (X) */
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: #ef4444 !important;
+    margin-right: 8px !important;
+    border: none !important;
+    font-weight: bold;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+    background-color: transparent !important;
+    color: #b91c1c !important;
+}
+
+/* Styling Dropdown Box (Kotak List Pilihan) */
+.select2-dropdown {
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+    overflow: hidden;
+    margin-top: 5px;
+    z-index: 9999;
+}
+
+/* Styling Opsi di dalam List */
+.select2-container--default .select2-results__option {
+    padding: 10px 15px !important;
+    font-size: 0.9rem;
+    color: #475569;
+}
+
+/* Efek saat Opsi di-hover (Highlight) */
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #7c4dff !important;
+    color: #ffffff !important;
+}
+
+/* Efek saat Opsi sudah dipilih */
+.select2-container--default .select2-results__option[aria-selected=true] {
+    background-color: #f8fafc !important;
+    color: #7c4dff !important;
+    font-weight: 600;
+}
+
+/* Search Box di dalam Dropdown */
+.select2-search--dropdown .select2-search__field {
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    padding: 8px 12px !important;
+    outline: none !important;
+}
+
+/* 1. Container List Dropdown */
+.select2-container--bootstrap5 .select2-results__options {
+    padding: 4px; /* Memberi ruang agar hover tidak mepet ke pinggir */
+    background-color: #ffffff; /* Ganti ke var(--card-bg) jika di dalam modal dark */
+}
+
+/* 2. Styling Item saat di Hover (Highlighted) */
+.select2-container--bootstrap5 .select2-results__option--highlighted[aria-selected] {
+    background: linear-gradient(135deg, #7c4dff 0%, #448aff 100%) !important;
+    color: #ffffff !important;
+    border-radius: 8px; /* Membuat sudut membulat saat di hover */
+    transition: all 0.2s ease;
+    padding: 10px 15px !important;
+    font-weight: 600;
+}
+
+/* 3. Styling Item yang sudah terpilih namun sedang di hover */
+.select2-container--bootstrap5 .select2-results__option--selectable.select2-results__option--selected.select2-results__option--highlighted {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%) !important;
+}
+
+/* 4. Styling Item Standar (Tanpa Hover) */
+.select2-results__option {
+    border-radius: 8px;
+    margin-bottom: 2px;
+    padding: 10px 15px !important;
+    transition: background 0.2s ease;
+    color: #475569;
+}
+
+/* 1. Kondisi Default Terpilih (Selected) */
+.select2-container--bootstrap5 .select2-results__option--selectable.select2-results__option--selected {
+    background-color: rgba(124, 77, 255, 0.08) !important; /* Warna ungu sangat muda */
+    color: #7c4dff !important; /* Teks berubah menjadi ungu */
+    font-weight: 700;
+    position: relative;
+}
+
+/* 2. Menambahkan Ikon Checkmark (Centang) di sebelah kanan item yang terpilih */
+.select2-container--bootstrap5 .select2-results__option--selectable.select2-results__option--selected::after {
+    content: " \f00c"; /* FontAwesome check icon */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    float: right;
+    font-size: 0.8rem;
+}
+
+/* 3. Kondisi Terpilih namun sedang di-Hover (Highlighted) */
+/* Kita buat sedikit lebih gelap/berbeda dari hover item biasa */
+.select2-container--bootstrap5 .select2-results__option--selectable.select2-results__option--selected.select2-results__option--highlighted {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%) !important;
+    color: #ffffff !important;
 }

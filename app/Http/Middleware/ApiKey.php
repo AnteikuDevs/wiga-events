@@ -20,7 +20,7 @@ class ApiKey
         if (empty($key)) {
             return response()->json([
                 'status' => false,
-                'message' => 'API key is missing.'
+                'message' => 'Unauthorized. Missing API key.'
             ], 401);
         }
 

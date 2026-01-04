@@ -23,7 +23,12 @@ return new class extends Migration
             $table->text('link')->nullable();
             $table->timestamp('start_time');
             $table->timestamp('end_time')->nullable();
+            $table->date('registration_end')->nullable();
             $table->boolean('status_publish')->default(false);
+            $table->bigInteger('registration_fee')->default(0);
+            $table->integer('quota')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->foreign('created_by')->references('id')->on('users');
             $table->timestamps();
         });
     }

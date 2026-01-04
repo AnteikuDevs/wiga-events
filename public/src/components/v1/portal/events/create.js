@@ -1,0 +1,68 @@
+let WigaClass = Wiga.class({
+    // 1. Inisialisasi awal halaman
+    render() {
+        this.fetchCategories();
+        this.setupListeners();
+    },
+
+    // 2. Ambil data kategori untuk Select2
+    async fetchCategories() {
+        let response = await WigaHttp.get('/portal/category/list');
+        WigaHttp.handle(response, null, function(res) {
+            let select = $('[name="category_ids[]"]').select2({
+                placeholder: 'Pilih Kategori',
+                allowClear: true,
+                width: '100%',
+                data: res.data.map(cat => ({id: cat.id, text: cat.name}))
+            });
+        });
+    },
+
+    // 3. Simpan data baru
+    async store() {
+        let response = await WigaHttp.post('/portal/events', WigaForm.data('#form-event-action'));
+        WigaHttp.handle(response, '#form-event-action', function(res) {
+            WigaNotify.success(res.message);
+            // Redirect kembali ke index setelah 1.5 detik
+            setTimeout(() => {
+                window.location.href = WigaRoute.url('/portal/events');
+            }, 1500);
+        }, function(res) {
+            WigaNotify.showInline('#wiga-alert', {
+                type: 'danger',
+                content: res.message
+            });
+        });
+    },
+
+    // 4. Listeners untuk UI logic
+    setupListeners() {
+        const _this = this;
+
+        $('#form-event-action').on('submit', function(e) {
+            e.preventDefault();
+            $wiga('#form-event-action [type="submit"]').indicator(_this.store());
+        });
+
+        $wiga('[name=until_finish]').on('change', function() {
+            $wiga('[name=end_time]').val('').parents('.form-floating').toggleClass('d-none', this.checked);
+        });
+
+        $wiga('[name=limited_quota]').on('change', function() {
+            $wiga('[name=quota]').val('');
+            $wiga('[data-content="limited"]').toggleClass('d-none', !this.checked);
+        });
+
+        $wiga('[name=is_paid]').on('change', function() {
+            $wiga('[name=registration_fee]').val('');
+            $wiga('[data-content="paid"]').toggleClass('d-none', !this.checked);
+        });
+
+        $wiga('[name=type]').on('change', function() {
+            let val = this.value;
+            $wiga('[data-content="online"], [data-content="offline"]').addClass('d-none')
+            $wiga('[data-content="online"], [data-content="offline"]').find('textarea').val('');
+            $wiga(`[data-content="${val}"]`).removeClass('d-none');
+        });
+    }
+});

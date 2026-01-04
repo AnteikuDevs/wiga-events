@@ -115,7 +115,20 @@ return [
         'type' => 'Jenis',
         'participant_type' => 'Jenis Peserta',
         'certificate_number' => 'Nomor Sertifikat',
-        
+        'agency' => 'Instansi',
+        'reg_code' => 'Kode Registrasi',
+
+        'registration_end' => 'Waktu Akhir Pendaftaran',
+        'location' => 'Lokasi',
+        'link' => 'Link',
+        'quota' => 'Kuota',
+        'registration_fee' => 'Biaya Pendaftaran',
+        'bank_name' => 'Nama Bank',
+        'bank_account_name' => 'Nama Akun Bank',
+        'bank_account_number' => 'Nomor Rekening Bank',
+
+        'proof_of_payment' => 'Bukti Pembayaran',
+
 
     ],
 

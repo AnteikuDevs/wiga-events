@@ -231,6 +231,27 @@ const WigaRoute = new class {
         return this.url(Wiga.config('STORAGE_URL') + id)
     }
     
+    param(name)
+    {
+        // Mengambil query string dari URL saat ini (contoh: ?category=musik&search=webinar)
+        const queryString = window.location.search;
+        
+        // Menggunakan URLSearchParams untuk kemudahan parsing
+        const urlParams = new URLSearchParams(queryString);
+        
+        // Jika nama parameter diberikan, ambil nilainya. Jika tidak, ambil semua parameter sebagai objek.
+        if (name) {
+            let value = urlParams.get(name) || '';
+            return decodeURIComponent(value);
+        }
+
+        // Opsional: Jika memanggil WigaRoute.param() tanpa argumen, return semua param dalam bentuk objek
+        const params = {};
+        for (const [key, value] of urlParams.entries()) {
+            params[key] = decodeURIComponent(value);
+        }
+        return params;
+    }
 }
 
 /*
@@ -350,6 +371,10 @@ const WigaString = new class {
         const regex = new RegExp(`[${escapedChars}]+$`);
         
         return str.replace(regex, '');
+    }
+
+    toIdr(value) {
+        return new Intl.NumberFormat('id-ID', { currency: 'IDR' }).format(value);
     }
 
 }
@@ -499,10 +524,17 @@ const WigaComponent = new class {
             const itemEventAttrs = this._buildEventDataAttribute(item.events || {});
             const customAttrs = this._buildAttributes(item.attributes || {}, ['events']);
 
-            if (item.href) {
-                return `<li><a href="${item.href}" class="dropdown-item" ${itemEventAttrs} ${customAttrs}>${item.text}</a></li>`;
+            let finalClass = 'dropdown-item'
+
+            if(item.className)
+            {
+                finalClass += ` ${item.className}`
             }
-            return `<li><button type="button" class="dropdown-item" ${itemEventAttrs} ${customAttrs}>${item.text}</button></li>`;
+
+            if (item.href) {
+                return `<li><a href="${item.href}" class="${finalClass}" ${itemEventAttrs} ${customAttrs}>${item.text}</a></li>`;
+            }
+            return `<li><button type="button" class="${finalClass}" ${itemEventAttrs} ${customAttrs}>${item.text}</button></li>`;
         }).join('');
 
         return `
@@ -662,6 +694,7 @@ class WigaEvent {
     async indicator(fetch) {
         $(this.selector).prop('disabled',true)
         $(this.selector).attr("data-kt-indicator", "on");
+        
         await fetch
 
         $(this.selector).prop('disabled',false)
@@ -700,6 +733,48 @@ class WigaEvent {
 
         $(this.selector).select2(options);
         return this;
+    }
+
+    // Menghunghilangkan elemen secara instan
+    hide() {
+        $(this.selector).hide();
+        return this;
+    }
+
+    // Menampilkan elemen secara instan
+    show() {
+        $(this.selector).show();
+        return this;
+    }
+
+    // Menampilkan elemen dengan efek pudar (animasi)
+    fadeIn(duration = 400, callback = null) {
+        $(this.selector).fadeIn(duration, callback);
+        return this;
+    }
+
+    // Menghilangkan elemen dengan efek pudar (animasi)
+    fadeOut(duration = 400, callback = null) {
+        $(this.selector).fadeOut(duration, callback);
+        return this;
+    }
+
+    // Toggle antara fadeIn dan fadeOut
+    fadeToggle(duration = 400, callback = null) {
+        $(this.selector).fadeToggle(duration, callback);
+        return this;
+    }
+
+    find(selector) {
+        return $(this.selector).find(selector);
+    }
+
+    clipboard(content = 'Konten') {
+        navigator.clipboard.writeText(this.selector);
+        WigaNotify.show({
+            type: 'success',
+            content: content + ' berhasil disalin <br> <code>' + this.selector + '</code>',
+        })
     }
 }
 
@@ -796,39 +871,81 @@ const WigaNotify = new class {
         // Hapus notifikasi sebelumnya di target ini
         $target.find('.wiga-inline-notify').remove();
 
-        const bootstrapAlertClass = {
-            success: 'alert-success',
-            danger: 'alert-danger',
-            warning: 'alert-warning',
-            info: 'alert-info'
-        }[type] || 'alert-info';
-
-        const faIconClass = {
-            success: 'fa-circle-check',
-            danger: 'fa-circle-xmark',
-            warning: 'fa-triangle-exclamation',
-            info: 'fa-circle-info'
-        }[type] || 'fa-circle-info';
+        // Mapping warna dan ikon
+        const theme = {
+            success: { color: '#00c853', bg: '#e8f5e9', icon: 'bi-check2-circle' },
+            danger:  { color: '#ff3d00', bg: '#ffebe6', icon: 'bi-x-circle' },
+            warning: { color: '#ffa000', bg: '#fff8e1', icon: 'bi-exclamation-triangle' },
+            info:    { color: '#0061ff', bg: '#e0eaff', icon: 'bi-info-circle' }
+        }[type] || { color: '#0061ff', bg: '#e0eaff', icon: 'bi-info-circle' };
 
         const $container = $(`
-            <div class="alert ${bootstrapAlertClass} alert-dismissible fade show wiga-inline-notify" role="alert" style="display: flex; align-items: center; gap: 10px;">
-                <i class="fa-solid ${faIconClass}" style="flex-shrink: 0; font-size: 1.5rem;"></i>
-                <div style="flex-grow: 1;">${content}</div>
-                ${dismiss ? `<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>` : ''}
+            <div class="wiga-inline-notify animate__animated animate__fadeIn" 
+                style="
+                    display: flex; 
+                    align-items: center; 
+                    padding: 1rem 1.25rem; 
+                    margin-bottom: 1.5rem;
+                    background-color: ${theme.bg}; 
+                    border-left: 4px solid ${theme.color};
+                    border-radius: 12px;
+                    gap: 15px;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+                ">
+                <div style="
+                    color: ${theme.color}; 
+                    font-size: 1.5rem; 
+                    display: flex; 
+                    align-items: center;
+                    justify-content: center;
+                ">
+                    <i class="bi ${theme.icon}"></i>
+                </div>
+                <div style="
+                    flex-grow: 1; 
+                    color: #1e293b; 
+                    font-size: 0.95rem; 
+                    font-weight: 500;
+                    line-height: 1.4;
+                ">
+                    ${content}
+                </div>
+                ${dismiss ? `
+                    <button type="button" class="btn-close-notify" style="
+                        background: none;
+                        border: none;
+                        color: #94a3b8;
+                        font-size: 1.25rem;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        padding: 0;
+                        transition: color 0.2s;
+                    ">
+                        <i class="fa-solid fa-close"></i>
+                    </button>` : ''}
             </div>
         `);
 
-        $target.append($container);
+        $target.prepend($container); // Menggunakan prepend agar muncul di atas form
 
         if (dismiss) {
-            $container.find('.btn-close').on('click', function () {
-                $container.remove();
+            const $closeBtn = $container.find('.btn-close-notify');
+            $closeBtn.on('mouseenter', () => $closeBtn.css('color', '#ef4444'));
+            $closeBtn.on('mouseleave', () => $closeBtn.css('color', '#94a3b8'));
+            $closeBtn.on('click', function () {
+                $container.css('opacity', '0').css('transform', 'translateY(-10px)');
+                setTimeout(() => $container.remove(), 300);
             });
         }
 
         if (countdown > 0) {
             setTimeout(() => {
-                $container.fadeOut(400, () => $container.remove());
+                if ($container) {
+                    $container.css('opacity', '0').css('transform', 'translateY(-10px)');
+                    setTimeout(() => $container.remove(), 400);
+                }
             }, countdown * 1000);
         }
     }
@@ -968,6 +1085,14 @@ const WigaForm = new class {
                             formData.append(`${name}[${i}]`, firstEl.files[i]);
                         }
                     }
+                }
+            } else if (firstEl.tagName === 'SELECT' && firstEl.multiple) {
+                // PERBAIKAN DI SINI: Untuk Select Multiple
+                const selectedOptions = $(firstEl).val(); // Mengambil array nilai dari jQuery
+                if (selectedOptions && selectedOptions.length > 0) {
+                    selectedOptions.forEach(value => {
+                        formData.append(name, value); // Mengirim category_ids[] 1, category_ids[] 2, dst.
+                    });
                 }
             } else {
                 // Untuk semua tipe input lainnya (text, hidden, textarea, dll.),
@@ -1370,211 +1495,242 @@ WigaTable.init({
 */
 
 class WigaUploadImage {
-    // =================================================================
-    // 1. Properti & Metode Statis (Milik Class, bukan Instansi)
-    // =================================================================
     static instances = {};
 
     /**
      * API Statis: Menampilkan preview gambar yang sudah ada.
-     * @param {object} options - Opsi berisi { name, id, filename }.
      */
     static preview(options) {
         const { name, id, filename } = options;
-        if (!name || !this.instances[name]) {
-            return console.warn(`WigaUploadImage instance with name "${name}" not found.`);
-        }
+        if (!name || !this.instances[name]) return;
+        
         const instance = this.instances[name];
         instance.state.initialId = id;
-        // instance.elements.idInput.val(id);
-        instance.displayFileItem(filename.split('/').pop(), filename);
+        instance.displayFileItem(filename.split('/').pop(), WigaRoute.storageUrl(id));
     }
 
-    /**
-     * API Statis: Mengambil ID dari gambar awal yang telah dihapus.
-     * @param {object} options - Opsi berisi { name }.
-     * @returns {Array} - Array berisi ID yang dihapus.
-     */
-    static deletedImage(options) {
-        const { name } = options;
-        if (!name || !this.instances[name]) {
-            return [];
-        }
-        return this.instances[name].state.deletedIds;
-    }
-
-    // =================================================================
-    // 2. Constructor (Dijalankan saat 'new WigaUploadImage()' dipanggil)
-    // =================================================================
     constructor(element) {
         this.$component = $(element);
         
-        // Baca semua atribut dan simpan sebagai properti instansi
-        this.nameAttr = this.$component.attr('name') || `uploaded_file_${Math.random().toString(36).substring(7)}`;
+        // Atribut Konfigurasi
+        this.nameAttr = this.$component.attr('name') || `file_${Math.random().toString(36).substring(7)}`;
         this.acceptAttr = this.$component.attr('accept') || 'image/png, image/jpeg, image/jpg';
-        this.titleAttr = this.$component.attr('title') || 'Upload Banner';
+        this.titleAttr = this.$component.attr('title') || 'Unggah Bukti Pembayaran';
         this.maxSizeAttr = this.$component.attr('maxsize') || '2';
-        // this.idNameAttr = this.$component.attr('data-id-name') || 'id';
         this.maxFileSizeInBytes = parseFloat(this.maxSizeAttr) * 1024 * 1024;
 
-        // State internal untuk setiap instansi
+        // State Internal
         this.state = { activeFiles: [], initialId: null, deletedIds: [] };
-
-        // Referensi ke elemen DOM yang akan kita buat
         this.elements = {};
 
         this.buildDOM();
         this.bindEvents();
 
-        // Daftarkan instansi ini ke registri statis
         WigaUploadImage.instances[this.nameAttr] = this;
-
-        // Ganti elemen placeholder dengan komponen yang sudah jadi
         this.$component.replaceWith(this.elements.uploaderElement);
     }
 
-    // =================================================================
-    // 3. Metode Instansi (Milik setiap objek yang dibuat)
-    // =================================================================
-
     /**
-     * Membangun semua elemen DOM dan menyimpannya di this.elements.
+     * Membangun DOM dengan tampilan Single Column yang Modern
      */
     buildDOM() {
-        const uploadIcon = $('<i>').addClass('fa-duotone fa-upload fs-2x d-block mb-2 text-gray-600');
-        const textHint = $('<small>').addClass('d-block mb-2').html('Drag and Drop a file to upload <br> or');
-        this.elements.browseBtn = $('<button>').prop('type', 'button').addClass('btn btn-primary rounded-pill btn-sm d-block mx-auto mb-2').text('Browse');
-        const textSupported = $('<small>').addClass('text-muted d-block').text(`Supported file: ${this.acceptAttr.replace(/image\//g, '')}. Max size: ${this.maxSizeAttr}MB`);
-        const dropZoneContent = $('<div>').addClass('text-center').append(uploadIcon, textHint, this.elements.browseBtn, textSupported);
-        this.elements.dropZone = $('<div>').addClass('w-100 border-dashed border-2 border-gray-300 rounded-3 p-5 d-flex align-items-center justify-content-center bg-white').append(dropZoneContent);
-        this.elements.fileInput = $('<input>').attr({ type: 'file', name: this.nameAttr, accept: this.acceptAttr }).addClass('d-none');
-        // this.elements.idInput = $('<input>').attr({ type: 'hidden', name: this.idNameAttr, value: '' });
-        const leftTitle = $('<h6>').addClass('mb-4').text(this.titleAttr);
-        const leftColumn = $('<div>').addClass('col-md-5 mb-4 mb-md-0').append(leftTitle, this.elements.dropZone, this.elements.fileInput);
-        const rightTitle = $('<h6>').addClass('mb-4').text('Uploaded File');
-        this.elements.uploadedFilesContainer = $('<div>').addClass('d-flex flex-column gap-3');
-        const rightColumn = $('<div>').addClass('col-md-7').append(rightTitle, this.elements.uploadedFilesContainer);
-        this.elements.modalImage = $('<img>').addClass('img-fluid');
-        const modalBody = $('<div>').addClass('modal-body p-0').append(this.elements.modalImage);
-        const modalHeader = $('<div>').addClass('modal-header').append('<h5 class="modal-title">Image Preview</h5>', '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>');
-        const modalContent = $('<div>').addClass('modal-content').append(modalHeader, modalBody);
-        const modalDialog = $('<div>').addClass('modal-dialog modal-lg modal-dialog-centered').append(modalContent);
-        const messageErrorContent = $('<div>').attr('data-error',this.nameAttr);
-        this.elements.imagePreviewModal = $('<div>').addClass('modal fade').attr({ id: `imagePreviewModal-${this.nameAttr}`, tabindex: '-1', 'aria-hidden': 'true' }).append(modalDialog);
-        this.elements.uploaderElement = $('<div>').addClass('row mb-4 user-select-none bg-light-info py-3 px-2 rounded-3').append(leftColumn, rightColumn, messageErrorContent, this.elements.imagePreviewModal);
+        // Container Utama
+        this.elements.uploaderElement = $('<div>')
+            .addClass('wiga-uploader-container mb-4')
+            .css({
+                'max-width': '100%',
+                'margin': '0 auto'
+            });
+
+        // Judul & Deskripsi
+        const header = $('<div>').addClass('mb-3 text-start').append(
+            $('<h6>').addClass('fw-bold text-dark mb-1').text(this.titleAttr),
+            $('<p>').addClass('text-muted small mb-0').text(`Pastikan file berformat ${this.acceptAttr.replace(/image\//g, '')} dengan ukuran maks. ${this.maxSizeAttr}MB`)
+        );
+
+        // Dropzone Area
+        const uploadIcon = $('<i>').addClass('fa-solid fa-cloud-arrow-up text-primary display-4 mb-2');
+        const dropzoneText = $('<div>').append(
+            $('<span>').addClass('d-block fw-semibold').text('Tarik & letakkan gambar di sini'),
+            $('<span>').addClass('text-muted small').text('atau klik untuk menelusuri perangkat Anda')
+        );
+
+        this.elements.dropZone = $('<div>')
+            .addClass('dropzone-area border-2 rounded-4 d-flex flex-column align-items-center justify-content-center p-5 text-center transition-all')
+            .css({
+                'border-style': 'dashed',
+                'border-color': '#cbd5e1',
+                'background': '#ffffff',
+                'cursor': 'pointer',
+                'min-height': '200px'
+            })
+            .append(uploadIcon, dropzoneText);
+
+        // Hidden Input
+        this.elements.fileInput = $('<input>')
+            .attr({ type: 'file', name: this.nameAttr, accept: this.acceptAttr })
+            .addClass('d-none');
+
+        // File List Container (Di bawah dropzone)
+        this.elements.uploadedFilesContainer = $('<div>').addClass('mt-3 d-flex flex-column gap-2');
+
+        // Modal Preview
+        this.elements.modalImage = $('<img>').addClass('img-fluid rounded shadow-sm');
+        this.elements.imagePreviewModal = $('<div>')
+            .addClass('modal fade')
+            .attr({ id: `modal-${this.nameAttr}`, tabindex: '-1' })
+            .append(
+                $('<div>').addClass('modal-dialog modal-dialog-centered modal-lg').append(
+                    $('<div>').addClass('modal-content border-0 shadow-lg').append(
+                        $('<div>').addClass('modal-header border-0 pb-0').append(
+                            $('<button>').addClass('btn-close').attr('data-bs-dismiss', 'modal')
+                        ),
+                        $('<div>').addClass('modal-body p-4 text-center').append(this.elements.modalImage)
+                    )
+                )
+            );
+
+        // Gabungkan Semuanya
+        this.elements.uploaderElement.append(
+            header,
+            this.elements.dropZone,
+            this.elements.fileInput,
+            this.elements.uploadedFilesContainer,
+        );
+
+        // Tambahkan Modal Preview
+        $('body').append(this.elements.imagePreviewModal);
     }
 
-    /**
-     * Menghubungkan semua event listener ke elemen DOM.
-     */
     bindEvents() {
-        this.elements.browseBtn.on('click', () => this.elements.fileInput.click());
-        this.elements.fileInput.on('change', (e) => { this.handleFiles(e.target.files); });
-        this.elements.fileInput.on('empty', (e) => { this.elements.fileInput.val('').trigger('change'); this.elements.uploadedFilesContainer.html(''); });
-        this.elements.dropZone.on('dragover', (e) => { e.preventDefault(); e.stopPropagation(); this.elements.dropZone.addClass('border-primary'); });
-        this.elements.dropZone.on('dragleave', (e) => { e.preventDefault(); e.stopPropagation(); this.elements.dropZone.removeClass('border-primary'); });
-        this.elements.dropZone.on('drop', (e) => { e.preventDefault(); e.stopPropagation(); this.elements.dropZone.removeClass('border-primary'); this.handleFiles(e.originalEvent.dataTransfer.files); });
+        // Klik area dropzone untuk buka file browser
+        this.elements.dropZone.on(' ck', () => this.elements.fileInput.click());
+
+        // Drag and Drop Events
+        this.elements.dropZone.on('dragover', (e) => {
+            e.preventDefault();
+            this.elements.dropZone.css({ 'border-color': '#0061ff', 'background': '#f0f7ff' });
+        });
+
+        this.elements.dropZone.on('dragleave', (e) => {
+            e.preventDefault();
+            this.elements.dropZone.css({ 'border-color': '#cbd5e1', 'background': '#ffffff' });
+        });
+
+        this.elements.dropZone.on('drop', (e) => {
+            e.preventDefault();
+            this.elements.dropZone.css({ 'border-color': '#cbd5e1', 'background': '#ffffff' });
+            this.handleFiles(e.originalEvent.dataTransfer.files);
+        });
+
+        // Change Event pada Input
+        this.elements.fileInput.on('change', (e) => this.handleFiles(e.target.files));
+
+        // Delete Event
         this.elements.uploadedFilesContainer.on('click', '.delete-btn', (e) => {
-            const fileItem = $(e.currentTarget).closest('.uploaded-file-item');
-            this.revokePreviewUrl(fileItem);
-            fileItem.remove();
-            if (this.state.initialId) { this.state.deletedIds.push(this.state.initialId); this.state.initialId = null; }
-            this.state.activeFiles = [];
-            // this.elements.idInput.val('');
-            this.elements.fileInput.val('');
-            this.updateFileInput();
+            e.stopPropagation(); // Mencegah modal terbuka saat klik hapus
+            const fileItem = $(e.currentTarget).closest('.file-item-card');
+            
+            fileItem.addClass('animate__fadeOutLeft');
+            setTimeout(() => {
+                this.revokePreviewUrl(fileItem);
+                fileItem.remove();
+                this.state.activeFiles = [];
+                this.elements.fileInput.val('');
+                if (this.state.initialId) { 
+                    this.state.deletedIds.push(this.state.initialId); 
+                    this.state.initialId = null; 
+                }
+                this.updateFileInput();
+            }, 300);
         });
     }
 
-    /**
-     * Menampilkan item file di UI.
-     */
     displayFileItem(fileName, previewUrl) {
-        this.revokePreviewUrl(this.elements.uploadedFilesContainer.find('.uploaded-file-item'));
         this.elements.uploadedFilesContainer.empty();
-        const fileIcon = $('<i>').addClass('fa-duotone fa-file-image fs-2x text-gray-600');
-        const fileNameSpan = $('<span>').addClass('text-truncate').text(fileName);
-        const deleteIcon = $('<i>').addClass('fa-duotone fa-trash p-0');
-        const deleteBtn = $('<button>').prop('type', 'button').addClass('btn btn-light-danger p-2 px-3 btn-sm delete-btn').append(deleteIcon);
-        const deleteWrapper = $('<div>').addClass('ms-auto').append(deleteBtn);
-        const triggerWrapper = $('<div>').addClass('d-flex align-items-center gap-3 flex-grow-1 text-truncate preview-trigger').css('cursor', 'pointer').append(fileIcon, fileNameSpan);
-        triggerWrapper.on('click', () => {
-            this.elements.modalImage.attr('src', previewUrl);
-            const bsModal = new bootstrap.Modal(this.elements.imagePreviewModal[0]);
-            bsModal.show();
+
+        const fileItem = $('<div>')
+            .addClass('file-item-card d-flex align-items-center p-3 rounded-4 border bg-white animate__animated animate__fadeInUp')
+            .css({ 'cursor': 'pointer', 'transition': 'all 0.2s' })
+            .data('preview-url', previewUrl);
+
+        const iconArea = $('<div>')
+            .addClass('rounded-3 bg-primary-soft p-2 me-3')
+            .append($('<i>').addClass('fa-solid fa-file text-primary fs-4'));
+
+        const infoArea = $('<div>').addClass('flex-grow-1 overflow-hidden').append(
+            $('<div>').addClass('fw-bold text-dark text-truncate small').text(fileName),
+            $('<div>').addClass('text-muted extra-small').text('Klik untuk melihat detail')
+        );
+
+        const actionArea = $('<div>').append(
+            $('<button>')
+                .attr('type', 'button')
+                .addClass('btn btn-light-danger btn-sm rounded-circle delete-btn')
+                .css({ 'width': '32px', 'height': '32px', 'padding': '0' })
+                .append($('<i>').addClass('fa-solid fa-trash'))
+        );
+
+        fileItem.append(iconArea, infoArea, actionArea);
+
+        // Preview saat klik kartu
+        fileItem.on('click', (e) => {
+            if (!$(e.target).closest('.delete-btn').length) {
+                this.elements.modalImage.attr('src', previewUrl);
+                const bsModal = new bootstrap.Modal(this.elements.imagePreviewModal[0]);
+                bsModal.show();
+            }
         });
-        const fileItem = $('<div>').addClass('w-100 d-flex align-items-center gap-3 p-2 border rounded-3 uploaded-file-item bg-white').data('preview-url', previewUrl).append(triggerWrapper, deleteWrapper);
+
         this.elements.uploadedFilesContainer.append(fileItem);
     }
 
-    /**
-     * Memproses file yang baru dipilih.
-     */
     handleFiles(newFiles) {
         if (!newFiles || newFiles.length === 0) return;
         const file = newFiles[0];
-        if (!this.validateFile(file)) return;
-        if (this.state.initialId) { this.state.deletedIds.push(this.state.initialId); this.state.initialId = null; }
+        
+        // Validasi
+        const validTypes = this.acceptAttr.split(',').map(t => t.trim());
+        const isTypeValid = validTypes.some(type => {
+            if (type === 'image/*') return file.type.startsWith('image/');
+            return file.type === type || file.name.toLowerCase().endsWith(type.replace('*', '').toLowerCase());
+        });
+
+        if (!isTypeValid) return alert('Format file tidak didukung!');
+        if (file.size > this.maxFileSizeInBytes) return alert(`File terlalu besar (Maks: ${this.maxSizeAttr}MB)`);
+
         this.state.activeFiles = [file];
-        // this.elements.idInput.val('');
         const previewUrl = URL.createObjectURL(file);
         this.displayFileItem(file.name, previewUrl);
         this.updateFileInput();
     }
 
-    /**
-     * Memvalidasi tipe dan ukuran file.
-     */
-    validateFile(file) {
-        let isTypeValid = this.acceptAttr.split(',').map(t => t.trim()).includes('image/*') ? file.type.startsWith('image/') : this.acceptAttr.split(',').map(t => t.trim()).includes(file.type);
-        if (!isTypeValid || file.size > this.maxFileSizeInBytes) {
-            alert(`Error pada file ${file.name}: Tipe atau ukuran tidak sesuai.`);
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Sinkronisasi state file ke elemen input.
-     */
     updateFileInput() {
         const dataTransfer = new DataTransfer();
         this.state.activeFiles.forEach(file => dataTransfer.items.add(file));
         this.elements.fileInput[0].files = dataTransfer.files;
     }
 
-    /**
-     * Menghapus URL preview dari memori.
-     */
     revokePreviewUrl(fileItemElement) {
-        if (fileItemElement && fileItemElement.length > 0) {
-            const oldUrl = fileItemElement.data('preview-url');
-            if (oldUrl && oldUrl.startsWith('blob:')) {
-                URL.revokeObjectURL(oldUrl);
-            }
-        }
+        const oldUrl = fileItemElement.data('preview-url');
+        if (oldUrl && oldUrl.startsWith('blob:')) URL.revokeObjectURL(oldUrl);
+    }
+
+    /**
+     * API Statis: Mengambil daftar ID yang dihapus untuk instance tertentu.
+     */
+    static deletedImage(options) {
+        const { name } = options;
+        if (!name || !this.instances[name]) return [];
+        
+        // Mengembalikan array deletedIds dari instance yang diminta
+        return this.instances[name].state.deletedIds;
     }
 }
 
-// Jalankan setelah halaman selesai dimuat
-document.addEventListener('DOMContentLoaded', () => {
-    // Cari semua elemen uploader
-    const uploaders = document.querySelectorAll('wiga-upload-image');
-
-    // Buat instansi baru untuk setiap elemen
-    uploaders.forEach(uploaderElement => {
-        new WigaUploadImage(uploaderElement);
-    });
-
-    // Setelah semua komponen diinisialisasi, Anda bisa memanggil API statis
-    // Contoh:
-    // const existingImage = { id: 101, url: 'https://via.placeholder.com/400x250' };
-
-    // WigaUploadImage.preview({
-    //     name: 'product_image',
-    //     id: existingImage.id,
-    //     filename: existingImage.url
-    // });
+// Inisialisasi
+$(document).ready(() => {
+    document.querySelectorAll('wiga-upload-image').forEach(el => new WigaUploadImage(el));
 });
 
 

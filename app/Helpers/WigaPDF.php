@@ -27,6 +27,8 @@ class WigaPDF extends Fpdf {
         
         $this->generateAuthor();
         
+        $this->AddFont('Tahoma-Bold', '', 'tahoma-bold.php',public_path('fonts'));
+        $this->AddFont('Tahoma', '', 'tahoma.php',public_path('fonts'));
         $this->AddFont('BernardMTCondensed', '', 'BernardMTCondensed.php',public_path('fonts'));
         $this->AddFont('SPD', '', 'Sugo-Pro-Display-Regular-trial.php',public_path('fonts'));
         $this->AddFont('OpenSans', '', 'OpenSans-Regular.php',public_path('fonts'));

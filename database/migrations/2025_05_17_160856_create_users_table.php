@@ -13,8 +13,14 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('role_id');
+            $table->foreign('role_id')->references('id')->on('roles');
+            $table->uuid('avatar_id')->nullable();
+            $table->foreign('avatar_id')->references('id')->on('my_storages');
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('phone_number')->nullable();
+            $table->string('agency_name')->nullable();
             $table->string('username')->unique();
             $table->string('password');
             $table->tinyInteger('status')->default(1);

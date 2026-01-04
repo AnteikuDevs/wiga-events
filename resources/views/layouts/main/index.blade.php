@@ -10,6 +10,11 @@
     <link href="{{ asset('icon.png') }}" rel="apple-touch-icon">
     <link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('plugins/fontawesome/css/all.min.css') }}">
+    <style>
+        body {
+            background: radial-gradient(circle at top right, #f8f9fa, #e9ecef);
+        }
+    </style>
     @stack('style')
 </head>
 <body>
@@ -30,6 +35,7 @@
         <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
         <script src="{{ asset('js/wiga-config.js') }}"></script>
         <script src="{{ asset('js/wiga.js') }}?v={{ time() }}"></script>
+        @stack('script')
     @if (isset($js) && !empty($js))
         @if(is_array($js))
             @foreach($js as $j)

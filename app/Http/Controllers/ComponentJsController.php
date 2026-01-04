@@ -17,7 +17,7 @@ class ComponentJsController extends Controller
         if(empty($cekJS))
         {
 
-            $cekFile = public_path('src/components/'.$hash.'.js');
+            $cekFile = resource_path('js/'.$hash.'.js');
 
             if(file_exists($cekFile))
             {
@@ -30,7 +30,7 @@ class ComponentJsController extends Controller
             abort(404);
         }
 
-        $path = public_path($cekJS->path).'.js';
+        $path = resource_path($cekJS->path).'.js';
 
         if(!file_exists($path))
         {

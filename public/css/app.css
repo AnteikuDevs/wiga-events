@@ -24,7 +24,7 @@
   --bs-gray-700: #495057;
   --bs-gray-800: #343a40;
   --bs-gray-900: #212529;
-  --bs-primary: #FFC107;
+  --bs-primary: #0061ff;
   --bs-secondary: #6c757d;
   --bs-success: #198754;
   --bs-info: #0dcaf0;
@@ -32,7 +32,7 @@
   --bs-danger: #dc3545;
   --bs-light: #f8f9fa;
   --bs-dark: #212529;
-  --bs-primary-rgb: 255, 193, 7;
+  --bs-primary-rgb: 0, 97, 255;
   --bs-secondary-rgb: 108, 117, 125;
   --bs-success-rgb: 25, 135, 84;
   --bs-info-rgb: 13, 202, 240;
@@ -69,6 +69,8 @@
   --bs-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --bs-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
+  --gradient-start: #0061ff;
+  --gradient-end: #60efff;
   --bs-body-font-family: var(--bs-font-sans-serif);
   --bs-body-font-size: 1rem;
   --bs-body-font-weight: 400;
@@ -2565,6 +2567,9 @@ textarea.form-control-lg {
   .form-floating > label {
     transition: none;
   }
+}
+.form-floating > .form-control {
+  padding-top: 23px !important;
 }
 .form-floating > .form-control,
 .form-floating > .form-control-plaintext {
@@ -5706,6 +5711,92 @@ textarea.form-control-lg {
     overflow-y: auto;
   }
 }
+/* Menimpa Backdrop (Latar Belakang) */
+.modal-backdrop.show {
+    opacity: 0.7;
+    background-color: #1e293b; /* Slate 900 */
+    backdrop-filter: blur(8px); /* Efek Glassmorphism */
+}
+
+/* Menimpa Container Utama Modal */
+.modal-content {
+    border: none !important;
+    border-radius: 28px !important; /* Radius besar yang modern */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+    overflow: hidden;
+}
+
+/* Menimpa Bagian Body Modal */
+.modal-body {
+    padding: 1.5 2rem !important;
+}
+
+/* Menimpa Tipografi (Jika menggunakan h4 di dalam modal) */
+.modal-body h4 {
+    color: #1e293b;
+    font-weight: 800 !important;
+    font-size: 1.5rem;
+    margin-top: 1rem;
+}
+
+/* Menimpa Tipografi (Jika menggunakan p di dalam modal) */
+.modal-body p {
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+/* Menimpa Tombol Primary di dalam Modal */
+.modal-body .btn-primary {
+    background-color: #0061ff !important;
+    border: none !important;
+    /* padding: 1rem !important; */
+    border-radius: 16px !important;
+    font-weight: 700 !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 97, 255, 0.3) !important;
+    transition: all 0.2s ease !important;
+}
+
+.modal-body .btn-primary:hover {
+    background-color: #0056e0 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 15px 20px -3px rgba(0, 97, 255, 0.4) !important;
+}
+
+/* Animasi Entry (Slight Zoom) */
+.modal.fade .modal-dialog {
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal.show .modal-dialog {
+    transform: scale(1);
+}
+
+/* Efek Guncangan Halus saat User klik di luar modal */
+.modal-static .modal-dialog {
+    animation: modalStaticBounce 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* Animasi Transformasi */
+@keyframes modalStaticBounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    30% {
+        transform: scale(1.03); /* Membesar sedikit */
+    }
+    60% {
+        transform: scale(0.98); /* Mengecil sedikit */
+    }
+}
+
+/* Optional: Tambahkan bayangan biru yang bersinar sesaat */
+.modal-static .modal-content {
+    box-shadow: 0 0 30px rgba(0, 97, 255, 0.2) !important;
+    transition: box-shadow 0.3s ease;
+}
+
 .tooltip {
   --bs-tooltip-zindex: 1080;
   --bs-tooltip-max-width: 200px;
@@ -8034,11 +8125,11 @@ textarea.form-control-lg {
 }
 
 .mb-3 {
-  margin-bottom: 1rem !important;
+  margin-bottom: 0.75rem !important;
 }
 
 .mb-4 {
-  margin-bottom: 1.5rem !important;
+  margin-bottom: 1rem !important;
 }
 
 .mb-5 {
@@ -11945,7 +12036,7 @@ textarea.form-control-lg {
   }
 }
 widget-main widget-login {
-  height: 85vh;
+  height: 100%;
   min-height: 550px;
   display: block;
 }
@@ -12097,3 +12188,282 @@ widget-main widget-login .login-box-container .card-body {
 }
 
 /*# sourceMappingURL=app.css.map */
+
+.login-page-wrapper {
+        min-height: 100vh;
+        /* background: radial-gradient(circle at top right, #f8f9fa, #e9ecef); */
+        padding: 20px;
+    }
+
+    /* Logo Glow Effect */
+    .login-logo {
+        max-width: 220px;
+        filter: drop-shadow(0 5px 15px rgba(0,0,0,0.05));
+    }
+
+    /* Glassmorphism Card Effect */
+    .login-card-modern {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 24px !important;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .login-card-modern:hover {
+        transform: translateY(-5px);
+    }
+
+    /* Form Styling */
+    .modern-form label {
+        font-weight: 500;
+        color: #495057;
+        margin-bottom: 8px;
+    }
+
+    /* Input Styling Customization */
+    /* Pastikan komponen x-forms.input menghasilkan input dengan class ini */
+    .form-control-lg {
+        border-radius: 12px !important;
+        border: 1.5px solid #eee !important;
+        padding: 12px 20px !important;
+        font-size: 1rem !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .form-control-lg:focus {
+        border-color: #0d6efd !important;
+        box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1) !important;
+    }
+
+    /* Button Styling */
+    .btn-lg {
+        padding: 14px !important;
+        font-weight: 600 !important;
+        letter-spacing: 0.5px;
+    }
+
+    /* Footer Text */
+    .footer-text a {
+        transition: opacity 0.3s ease;
+    }
+    
+    .footer-text a:hover {
+        opacity: 0.7;
+    }
+
+    /* Container Overlay (Latar Belakang Gelap/Blur) */
+#wiga-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(30, 41, 59, 0.7); /* Dark Slate dengan transparansi */
+    backdrop-filter: blur(8px); /* Efek blur modern */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Box Modal Utama */
+#wiga-modal {
+    background: #ffffff;
+    width: 90%;
+    max-width: 400px;
+    padding: 2.5rem;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transform: translateY(0);
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Judul Modal */
+#wiga-modal h4 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    color: #1e293b;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+}
+
+/* Deskripsi Modal */
+#wiga-modal p {
+    color: #64748b;
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+/* Tombol Tutup Kustom */
+#wiga-modal .close-btn {
+    background-color: #0061ff; /* Biru tema Anda */
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    width: 100%;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 97, 255, 0.3);
+    cursor: pointer;
+}
+
+#wiga-modal .close-btn:hover {
+    background-color: #0056e0;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 97, 255, 0.4);
+}
+
+#wiga-modal .close-btn:active {
+    transform: translateY(0);
+}
+
+/* Animasi Entry */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(30px) scale(0.9); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+    }
+}
+
+.bg-primary-gradient {
+        background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%) !important;
+        color: white !important;
+    }
+
+    /* Efek Hover untuk Tombol yang menggunakan gradasi ini */
+    .btn.bg-primary-gradient {
+        border: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        z-index: 1;
+    }
+
+    .btn.bg-primary-gradient:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+        box-shadow: 0 10px 20px rgba(0, 97, 255, 0.3);
+        color: white !important;
+    }
+
+    .btn.bg-primary-gradient:active {
+        transform: translateY(0);
+    }
+
+    /* Utility Shadow untuk gradasi */
+    .shadow-primary-gradient {
+        box-shadow: 0 10px 25px -5px rgba(0, 97, 255, 0.4) !important;
+    }
+
+code:not([class*=language-]) {
+  font-weight: 400;
+  color: #b93993;
+  line-height: inherit;
+  font-size: inherit;
+  background-color: #F1F3F8;
+  padding: 0.1rem 0.4rem;
+  margin: 0 0.5rem;
+  box-shadow: 0px 3px 9px rgba(0, 0, 0, 0.08);
+  border-radius: 0.3rem;
+}
+
+/* Container untuk Badge */
+.badge {
+    padding: 0.5rem 0.75rem;
+    font-weight: 600;
+    border-radius: 0.475rem;
+    font-size: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Varian Badge Light (Soft Background) */
+
+/* Secondary / Muted */
+.badge-light-secondary {
+    color: #5E6278;
+    background-color: #F5F8FA;
+}
+
+/* Primary */
+.badge-light-primary {
+    color: #009ef7;
+    background-color: #f1faff;
+}
+
+/* Success */
+.badge-light-success {
+    color: #50cd89;
+    background-color: #e8fff3;
+}
+
+/* Danger */
+.badge-light-danger {
+    color: #f1416c;
+    background-color: #fff5f8;
+}
+
+/* Warning */
+.badge-light-warning {
+    color: #ffc700;
+    background-color: #fff8dd;
+}
+
+/* Info */
+.badge-light-info {
+    color: #7239ea;
+    background-color: #f8f5ff;
+}
+
+/* Dark */
+.badge-light-dark {
+    color: #181C32;
+    background-color: #Eff2f5;
+}
+
+/* Warna khusus untuk info-item yang penting */
+.info-item i.fa-hourglass-end {
+    background-color: #fff5f8;
+    color: #f1416c;
+}
+
+/* Memastikan teks link tidak pecah */
+.text-break-url {
+    word-break: break-all;
+}
+
+/* Animasi pulse untuk tombol daftar */
+.btn-gradient {
+    background: linear-gradient(90deg, #0061ff 0%, #60efff 100%);
+    color: white;
+    border: none;
+    transition: transform 0.3s ease;
+}
+
+.btn-gradient:hover {
+    transform: translateY(-3px);
+    color: white;
+}
+
+.btn-close-custom:hover {
+    color: #ef4444 !important;
+}
+/* Menghilangkan tombol close default bootstrap jika masih muncul */
+.alert-dismissible .btn-close {
+    display: none;
+}

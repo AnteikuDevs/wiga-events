@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('event_id')->constrained();
             $table->string('token');
+            $table->string('qr_code_path');
             $table->timestamp('expired_at');
             $table->timestamps();
         });

@@ -17,7 +17,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             ApiCredentialSeeder::class,
-            UserSeeder::class
+            RoleSeeder::class,
+            UserSeeder::class,
+            CategorySeeder::class
         ]);
 
     }

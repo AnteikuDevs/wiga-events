@@ -63,8 +63,7 @@
 @elseif($type == 'select')
 
 <div class="form-floating mb-4">
-    <select name="{{ $name }}" class="form-select {{ $class }}"{{ $required ? ' required' : '' }}{{ $autocomplete ? " autocomplete=$autocomplete " : '' }} {{ $attrs }}>
-        <option value="" disabled selected>{{ $label }}</option>
+    <select name="{{ $name }}" data-control="select2" class="form-select {{ $class }}"{{ $required ? ' required' : '' }}{{ $autocomplete ? " autocomplete=$autocomplete " : '' }} {{ $attrs }}>
         {{ $slot }}
     </select>
     <label for="{{ $inputId }}">{{ $label }}</label>

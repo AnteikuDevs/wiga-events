@@ -8,3 +8,4 @@ include 'DataTableHelper.php';
 include 'FileHelper.php';
 include 'MyStorage.php';
 include 'WigaPDF.php';
+include 'MyQRCode.php';

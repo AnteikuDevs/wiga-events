@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -43,6 +44,20 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        $this->renderable(function (ValidationException $e, $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return response()->json([
+                    // Pilihan A: Hanya ambil pesan pertama saja
+                    'message' => "Data yang dikirimkan tidak valid.",
+                    
+                    // Pilihan B: Pesan statis Bahasa Indonesia
+                    // 'message' => 'Data yang dikirimkan tidak valid.',
+                    
+                    'errors' => $e->errors(),
+                ], 422);
+            }
         });
     }
 }

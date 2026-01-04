@@ -24,8 +24,18 @@ class Participant extends Model
         return $this->belongsTo(Event::class);
     }
 
-    public function certificate()
+    // public function certificate()
+    // {
+    //     return $this->hasOne(ParticipantCertificate::class);
+    // }
+
+    public function certificateTemplate()
     {
-        return $this->hasOne(ParticipantCertificate::class);
+        return $this->belongsTo(CertificateTemplate::class);
+    }
+
+    public function proof_of_payment()
+    {
+        return $this->belongsTo(MyStorage::class, 'proof_of_payment_id');
     }
 }

@@ -6,7 +6,7 @@
     'size' => '',
 ])
 
-<div class="modal fade" id="{{ $id }}" tabindex="-1" aria-labelledby="{{ $id }}Label" aria-hidden="true">
+<div class="modal fade" id="{{ $id }}" tabindex="-1" aria-labelledby="{{ $id }}Label" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog {{ $size? 'modal-' . $size : '' }}">
         <div class="modal-content">
         @if ($withForm)

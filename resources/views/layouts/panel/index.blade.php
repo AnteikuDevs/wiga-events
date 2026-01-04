@@ -16,6 +16,7 @@
     <link href="{{ asset('panel/plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('panel/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="{{ asset('plugins/fontawesome/css/all.min.css') }}">
+    @stack('style')
 </head>
 	<body id="kt_body" style="background-image: url({{ asset('panel/media/patterns/header-bg.png') }})" class="header-fixed header-tablet-and-mobile-fixed">
 
@@ -66,12 +67,13 @@
             <script src="{{ asset('panel/plugins/global/plugins.bundle.js') }}"></script>
             <script src="{{ asset('panel/plugins/custom/datatables/datatables.bundle.js') }}"></script>
             <script src="{{ asset('panel/js/scripts.bundle.js') }}"></script>
-            <script src="{{ asset('panel/js/custom/widgets.js') }}"></script>
+            {{-- <script src="{{ asset('panel/js/custom/widgets.js') }}"></script> --}}
             <script src="https://js.pusher.com/8.4.0/pusher.min.js"></script>
             <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
             <script src="{{ asset('js/wiga-config.js') }}"></script>
             <script src="{{ asset('js/wiga.js') }}?v={{ time() }}"></script>
             <script src="{{ asset('js/'.componentJS('me').'.js') }}?v={{ time() }}"></script>
+            @stack('script')
         @if (isset($js) && !empty($js))
             @if(is_array($js))
                 @foreach($js as $j)

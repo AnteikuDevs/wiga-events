@@ -17,9 +17,10 @@ return new class extends Migration
             $table->foreignId('participant_id')->constrained('participants');
             $table->foreignId('certificate_template_id')->constrained('certificate_templates');
             $table->string('participant_type');
-            $table->string('certificate_number');
+            $table->string('certificate_number')->nullable();
             $table->uuid('certificate_file_id')->nullable();
             $table->foreign('certificate_file_id')->references('id')->on('my_storages');
+            $table->string('certificate_as')->nullable()->default('Peserta');
             $table->timestamps();
         });
     }

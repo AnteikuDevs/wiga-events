@@ -33,4 +33,9 @@ class User extends Authenticatable
     {
         return self::where('remember_token', $token)->first();
     }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
 }

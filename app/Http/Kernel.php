@@ -34,7 +34,7 @@ class Kernel extends HttpKernel
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \App\Http\Middleware\VerifyCsrfToken::class,
+            // \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
 
@@ -70,5 +70,9 @@ class Kernel extends HttpKernel
         'api.user' => \App\Http\Middleware\ApiUserToken::class,
         'user.token' => \App\Http\Middleware\UserToken::class,
         'user.guest' => \App\Http\Middleware\UserGuest::class,
+
+        'admin.access' => \App\Http\Middleware\IsAdmin::class,
+
+        'user.token.verified' => \App\Http\Middleware\UserTokenVerified::class,
     ];
 }

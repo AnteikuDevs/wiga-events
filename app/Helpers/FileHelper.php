@@ -5,7 +5,7 @@ use App\Models\ComponentJS;
 function componentJS($path)
 {
 
-    $componentSrcPath = 'src/components/'.env('APP_VERSION');
+    $componentSrcPath = 'js/'.env('APP_VERSION');
 
     $fullpath = strip_slash($componentSrcPath.'/'.$path);
 

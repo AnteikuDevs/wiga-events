@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
 use App\Traits\HasFilter;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,12 +19,26 @@ class Event extends Model
         'status',
         'date_format',
         'time_format',
+        'registration_end_status',
+        'registration_end_format'
     ];
 
     protected $casts = [
         'start_time' => 'datetime',
         'end_time' => 'datetime',
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+        
+        // Set UUID secara otomatis saat membuat model baru
+        static::creating(function ($model) {
+            if (empty($model->id)) {
+                $model->uuid = (string) Str::uuid();
+            }
+        });
+    }
 
     public function getStartTimeFormatAttribute()
     {
@@ -43,6 +58,19 @@ class Event extends Model
     public function getEndTimeFormatAttribute()
     {
         return formatDateIndo($this->end_time);
+    }
+    
+    public function getRegistrationEndFormatAttribute()
+    {
+        return formatDateIndo($this->registration_end);
+    }
+
+    public function getRegistrationEndStatusAttribute()
+    {
+        if ($this->registration_end && $this->registration_end < now()) {
+            return true;
+        }
+        return false;
     }
 
     public function getStatusIdAttribute()
@@ -83,5 +111,10 @@ class Event extends Model
     public function certificates()
     {
         return $this->hasMany(CertificateTemplate::class);
+    }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, EventCategory::class);
     }
 }

@@ -14,80 +14,101 @@ use WigaStorage;
 
 class EventCertificateController extends Controller
 {
-    public function index(Request $request,string $id)
-    {
-        $data = Participant::findOrFail(str_replace('cert-', '', base64_decode($id)));
-        
-        $event = $data->event;
-
-        $template = $event->certificates()->where('participant_type', $data->type)->first();
-
-        if(!$template)
-        {
-            return view('event.cert-not-published');
-        }
-
-        $cert = ParticipantCertificate::where([
-            'event_id' => $event->id,
-            'participant_id' => $data->id,
-            'certificate_template_id' => $template->id
-        ])->first();
-
-        if(!$cert)
-        {
-            
-            $cert = new ParticipantCertificate();
-            $cert->event_id = $event->id;
-            $cert->participant_id = $data->id;
-            $cert->certificate_template_id = $template->id;
-            $cert->participant_type = $data->type;
-            $cert->certificate_number = $template->certificate_number;
-            $cert->save();
-        }else{
-            $cert->update([
-                'certificate_number' => $template->certificate_number
-            ]);
-        }
-
-        $update = $request->input('update') == '1' ? true : false;
-        
-        return $this->renderCert($cert,$update);
-        
-    }
-
-    private function renderCert(ParticipantCertificate $certificate,$update = false)
+    public function index(Request $request,string $code)
     {
 
-        $pdf = new WigaPDF('L', 'mm', 'A5','Sertifikat '.$certificate->participant->name . ' : '.$certificate->event->title);
+        $participant = Participant::where('reg_code', "REG-".$code)->first();
+
+        $event = $participant->event;
+        $certificate = $participant->certificateTemplate;
+        
+
+        $pdf = new WigaPDF('L', 'mm', 'A5','Sertifikat '.$participant->name . ' : '.$event->title);
         $pdf->AddPage();
         $pdf->SetFont('Times', 'B', 12);
         $pageWidth = $pdf->GetPageWidth();
         $pageHeight = $pdf->GetPageHeight();
-        $pdf->Image(public_path($certificate->certificateTemplate->image->url), 0, 0, $pageWidth, $pageHeight);
+        $pdf->Image(public_path($certificate->image->url), 0, 0, $pageWidth, $pageHeight, $certificate->ext);
 
-        $pdf->SetY(53);
-        $pdf->SetFont('OpenSans', '', 12);
-        $pdf->Cell(0, 0, $certificate->certificate_number, 0, 1, 'C');
-        
-        $pdf->SetFont('SPD', '', 30);
-        $pdf->SetY(73);
-        $pdf->SetTextColor(65, 10, 0);
-        $pdf->Cell(0, 0, strtoupper($certificate->participant->name), 0, 1, 'C');
-
-        $pdfOutput = $pdf->Output('S');
-
-        if(!$certificate->certificate_file_id || $update)
+        if($request->model == '1')
         {
-            Storage::disk('public')->put('certificate/'.$certificate->event_id.'/'.$certificate->participant_id.'.pdf', $pdfOutput);
-    
-            $certificateFileId = WigaStorage::save('storage/certificate/'.$certificate->event_id, $certificate->participant_id.'.pdf', 'certificate/'.$certificate->event_id)->id();        
-    
-            $certificate->certificate_file_id = $certificateFileId;
-            $certificate->save();
+            $pdf->SetY(33);
+            $pdf->SetFont('Tahoma', '', 16);
+            $pdf->Cell(0, 0, $request->certificate_number, 0, 1, 'C');
+        }
+
+        
+        $pdf->SetFont('Tahoma-Bold', '', 30);
+        $pdf->SetY(60);
+        // $pdf->SetTextColor(65, 10, 0);
+        $pdf->Cell(0, 0, strtoupper($participant->name), 0, 1, 'C');
+
+        $pdf->SetFont('Tahoma-Bold', '', 18);
+        $pdf->SetY(81.5);
+        // $pdf->SetTextColor(65, 10, 0);
+        $pdf->Cell(0, 0, strtoupper($participant->certificate_as), 0, 1, 'C');
+
+        return response($pdf->Output('S', $pdf->filename))
+        ->header('Content-Type', 'application/pdf')
+        ->header('Content-Disposition', 'inline; filename="'.$pdf->filename.'"');
+        
+    }
+
+
+    public function preview(Request $request)
+    {
+
+        $request->validate([
+            'event' => 'required',
+            'model' => 'required|in:1,2',
+            'image_id' => 'required_without:image|nullable',
+            'image' => 'required_without:image_id|nullable|image|mimes:jpeg,png,jpg',
+            'certificate_number' => 'nullable',
+            'certificate_as' => 'required',
+        ]);
+
+        $dataEvent = Event::findOrFail($request->event);
+
+        if($request->image_id)
+        {
+            $imageFile = WigaStorage::find($request->image_id);
+            $tempImagePath = public_path($imageFile->url);
+
+            $extension = $imageFile->ext;
+
+        }else{
+
+            $file = $request->file('image');
+            $tempImagePath = $file->getRealPath();
+            
+            $extension = $file->getClientOriginalExtension();
         }
 
 
-        return redirect()->route('file.show', [$certificate->certificate_file_id]);
+        $pdf = new WigaPDF('L', 'mm', 'A5','Preview Sertifikat');
+        $pdf->AddPage();
+        $pdf->SetFont('Times', 'B', 12);
+        $pageWidth = $pdf->GetPageWidth();
+        $pageHeight = $pdf->GetPageHeight();
+        $pdf->Image($tempImagePath, 0, 0, $pageWidth, $pageHeight, $extension);
+
+        if($request->model == '1')
+        {
+            $pdf->SetY(33);
+            $pdf->SetFont('Tahoma', '', 16);
+            $pdf->Cell(0, 0, $request->certificate_number, 0, 1, 'C');
+        }
+
+        
+        $pdf->SetFont('Tahoma-Bold', '', 30);
+        $pdf->SetY(60);
+        // $pdf->SetTextColor(65, 10, 0);
+        $pdf->Cell(0, 0, "NAMA LENGKAP", 0, 1, 'C');
+
+        $pdf->SetFont('Tahoma-Bold', '', 18);
+        $pdf->SetY(81.5);
+        // $pdf->SetTextColor(65, 10, 0);
+        $pdf->Cell(0, 0, strtoupper($request->certificate_as), 0, 1, 'C');
 
         return response($pdf->Output('S', $pdf->filename))
         ->header('Content-Type', 'application/pdf')
