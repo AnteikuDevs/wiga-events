@@ -67,7 +67,7 @@ class Event extends Model
 
     public function getRegistrationEndStatusAttribute()
     {
-        if ($this->registration_end && $this->registration_end < now()) {
+        if ($this->registration_end && $this->registration_end < date('Y-m-d')) {
             return true;
         }
         return false;
@@ -106,6 +106,11 @@ class Event extends Model
     public function participants()
     {
         return $this->hasMany(Participant::class);
+    }
+
+    public function participantAttendance()
+    {
+        return $this->hasMany(ParticipantAttendance::class);
     }
 
     public function certificates()

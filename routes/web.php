@@ -38,7 +38,6 @@ Route::middleware(['user.guest'])->group(function () {
 
 Route::middleware(['user.token','prevent-back'])->group(function () {
 
-
     Route::get('logout', function () {
         return redirect('login')->withCookie(Cookie::forget('wigaevents_id'));
     })->name('logout');
@@ -196,6 +195,8 @@ Route::middleware(['user.token','prevent-back'])->group(function () {
 
     });
 
+    Route::get('export-laporan', [Api\Portal\DashboardController::class,'reportExport'])->name('export-laporan');
+
 });
 
 
@@ -208,8 +209,8 @@ Route::middleware(['user.token.verified'])->group(function () {
         ]);
     })->name('home');
 
-    Route::get('/_reg_/REG-{code}/certificate', [EventCertificateController::class,'index'])->name('event.certificate');
-    Route::get('/_reg_/REG-{code}', [EventController::class,'regCodeGenerate'])->name('event.reg-code.generate');
+    Route::get('/reg/REG-{code}/certificate', [EventCertificateController::class,'index'])->name('event.certificate');
+    Route::get('/reg/REG-{code}', [EventController::class,'regCodeGenerate'])->name('event.reg-code.generate');
     Route::get('/attendance_{token}', [EventController::class,'attendance'])->name('event.attendance');
     Route::get('/attendance:{token}', [EventController::class,'showQr'])->name('event.attendance.qr');
     

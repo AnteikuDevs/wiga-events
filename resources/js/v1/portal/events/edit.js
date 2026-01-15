@@ -84,7 +84,10 @@ let WigaClass = Wiga.class({
         let response = await WigaHttp.post('/portal/events/' + eventId, data);
         WigaHttp.handle(response, '#form-event-action', (res) => {
             WigaNotify.success(res.message);
-            setTimeout(() => { window.location.href = WigaRoute.url('/portal/events'); }, 1500);
+            // setTimeout(() => { window.location.href = WigaRoute.url('/portal/events'); }, 1500);
+            setTimeout(() => {
+                WigaRoute.redirect('/portal/events/'+ data.id + '/certificates');
+            }, 1500);
         }, (res) => {
             WigaNotify.showInline('#wiga-alert', { type: 'danger', content: res.message });
         });

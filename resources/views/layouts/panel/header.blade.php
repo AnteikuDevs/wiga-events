@@ -33,7 +33,7 @@
 
                         @endif
 
-                        <div class="menu-item menu-lg-down-accordion me-lg-1">
+                        {{-- <div class="menu-item menu-lg-down-accordion me-lg-1">
                             <a class="menu-link py-3{{ Route::is('portal.profile*') ? ' active' : '' }}" href="{{ route('portal.profile') }}">
                                 <span class="menu-icon">
                                     <span class="svg-icon svg-icon-2">
@@ -42,7 +42,7 @@
                                 </span>
                                 <span class="menu-title">Profil</span>
                             </a>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>

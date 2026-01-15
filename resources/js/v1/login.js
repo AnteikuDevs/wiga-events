@@ -4,7 +4,15 @@ let WigaClass = Wiga.class({
         let response = await WigaHttp.post('login', WigaForm.json('#WigaFormPage'));
         WigaHttp.handle(response,'#WigaFormPage',function(res) {
             WigaSigned(res.data)
-            WigaRoute.reload()
+            
+            WigaNotify.show({
+                type: 'success',
+                content: 'Anda berhasil login.',
+            });
+
+            setTimeout(() => {
+                WigaRoute.reload()
+            }, 3000);
         },function(res){
             WigaNotify.showInline('#wiga-alert',{
                 type: 'danger',

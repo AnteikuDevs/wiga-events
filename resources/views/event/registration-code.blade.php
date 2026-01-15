@@ -142,18 +142,24 @@
                         @else
 
                         <div class="my-2 qr--code">
-                            <img src="{{ MyQRCode::render(url('/_reg_/'.$participant->reg_code)) }}" alt="QR">
+                            <img src="{{ MyQRCode::render(url('/reg/'.$participant->reg_code)) }}" alt="QR">
                         </div>
 
                         
-                        <div class="card my-5 text-start no-print glass-card rounded-4">
+                        <div class="card mt-5 mb-3 text-start no-print glass-card rounded-4">
                             <div class="card-body">
                                 <h7 class="fw-bold text-white mb-1">Lokasi Pelaksanaan ({{ $event->type }})</h7>
                                 @if ($event->type == 'online')
                                     <p class="small mb-0"><a href="{{ $event->link }}" target="_blank" class="text-decoration-none text-purple fw-bold">{{ $event->link }}</a></p>
                                 @else
-                                    <p class="small mb-0">{{ $event->location }}</p>
+                                    <p class="small mb-0 text-purple">{{ $event->location }}</p>
                                 @endif
+                            </div>
+                        </div>
+                        <div class="card mb-5 text-start no-print glass-card rounded-4">
+                            <div class="card-body">
+                                <h7 class="fw-bold text-white mb-1">Waktu Pelaksanaan</h7>
+                                <p class="small mb-0 text-white">{{ $event->start_time_format }} - {{ $event->end_time_format? $event->end_time_format : 'Selesai' }}</p>
                             </div>
                         </div>
 
@@ -161,12 +167,12 @@
 
                         <div class="row g-3 text-start mb-4 info-grid mt-2">
                             <div class="col-6">
-                                <label>INSTITUTION</label>
+                                <label>INSTANSI</label>
                                 <span>{{ $participant->agency }}</span>
                             </div>
                             <div class="col-6 text-end">
-                                <label>EVENT DATE</label>
-                                <span>{{ $event->date_format }}</span>
+                                <label>WAKTU REGISTRASI</label>
+                                <span>{{ $participant->created_at_format }}</span>
                             </div>
                         </div>
 
@@ -174,7 +180,7 @@
                             {{-- <button id="btn-download" onclick="downloadTicket()" class="btn btn-main-gradient py-3">
                                 <i class="bi bi-download me-2"></i> Save Image
                             </button> --}}
-                            @if ($participant->attendance)
+                            @if ($participant->attendance && $participant->status_publish == '1')
                                 <button class="btn btn-main-gradient py-3" id="btn-generate-cert">
                                     <i class="fa-solid fa-certificate me-2"></i> Cetak Sertifikat
                                 </button>

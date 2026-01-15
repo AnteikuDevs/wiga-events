@@ -17,7 +17,7 @@ class EventCertificateController extends Controller
     public function index(Request $request,string $code)
     {
 
-        $participant = Participant::where('reg_code', "REG-".$code)->first();
+        $participant = Participant::where('reg_code', "REG-".$code)->firstOrFail();
 
         $event = $participant->event;
         $certificate = $participant->certificateTemplate;
@@ -30,11 +30,11 @@ class EventCertificateController extends Controller
         $pageHeight = $pdf->GetPageHeight();
         $pdf->Image(public_path($certificate->image->url), 0, 0, $pageWidth, $pageHeight, $certificate->ext);
 
-        if($request->model == '1')
+        if($certificate->model_id == '1')
         {
             $pdf->SetY(33);
             $pdf->SetFont('Tahoma', '', 16);
-            $pdf->Cell(0, 0, $request->certificate_number, 0, 1, 'C');
+            $pdf->Cell(0, 0, $certificate->certificate_number, 0, 1, 'C');
         }
 
         

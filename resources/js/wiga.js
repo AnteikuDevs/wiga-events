@@ -1977,10 +1977,11 @@ const WigaTooltip = Wiga.class({
         return tp;
     },
     render: () => {
+        let _this = this
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
 
         tooltipTriggerList.map(function (tooltipTriggerEl) {
-            WigaTooltip.initialize(tooltipTriggerEl, {});
+            _this.initialize(tooltipTriggerEl, {});
         });
     }
 });

@@ -131,6 +131,7 @@ class EventController extends Controller
 
             return response([
                 'status' => true,
+                'data' => $event,
                 'message' => "Berhasil menambahkan event",
             ]);
         });
@@ -200,6 +201,7 @@ class EventController extends Controller
 
             return response([
                 'status' => true,
+                'data' => $data,
                 'message' => "Berhasil mengubah event",
             ]);
         });
@@ -338,7 +340,7 @@ class EventController extends Controller
 
         $participantSended = $data->participants()->has('attendance')->where('status_publish',false)->get()->map(function($item){
             return [
-                'target' => $item->phone_number.'|'.$item->name.'|'.route('event.certificate',[trimBase64(base64_encode($item->attendance->id))])
+                'target' => $item->phone_number.'|'.$item->name.'|'.url('reg/'.$item->reg_code.'/certificate')
             ];
         })->pluck('target')->toArray();
 
@@ -359,13 +361,13 @@ class EventController extends Controller
 
 Terima kasih telah bergabung dalam acara *{$data->title}*.\n
 
-Berikut adalah link unduh e-sertifikat sebagai bukti partisipasi Anda: 👉 _{var1}_
+Berikut adalah link unduh e-sertifikat sebagai bukti partisipasi Anda: 👉 {var1}
 
 Catatan: Pastikan koneksi internet stabil saat mengunduh.
 
 Sampai bertemu di event selanjutnya!
 
-*WigaEvent*"
+*_WigaEvent_*"
 
         ]);
 

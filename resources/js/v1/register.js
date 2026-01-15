@@ -16,7 +16,7 @@ let WigaClass = Wiga.class({
             // Opsional: Redirect ke halaman login setelah beberapa detik
             setTimeout(() => {
                 window.location.href = WigaRoute.url('/login');
-            }, 5000);
+            }, 3000);
 
         }, function(res) {
             // Tampilkan error validasi (email sudah ada, password kurang panjang, dll)

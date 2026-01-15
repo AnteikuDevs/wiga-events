@@ -41,7 +41,7 @@ let WigaClass = Wiga.class({
 
 $wiga('#form-event-action').on('submit', async function(e) {
     e.preventDefault();
-    $wiga('#form-event-action [type="submit"]').indicator(_this.update());
+    $wiga('#form-event-action [type="submit"]').indicator(WigaClass.store());
 });
 
 // $wiga('[name=until_finish]').on('change', function() {

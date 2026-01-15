@@ -45,6 +45,10 @@ Route::prefix(env('API_VERSION', 'v1'))->group(function () {
 
                 
                 Route::get('dashboard', [Portal\DashboardController::class,'summary']);
+
+                Route::post('profile', [Portal\ProfileController::class,'update']);
+                Route::post('profile/password', [Portal\ProfileController::class,'updatePassword']);
+                
             });
 
 

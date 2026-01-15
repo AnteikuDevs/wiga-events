@@ -11,6 +11,10 @@ class Participant extends Model
 
     protected $guarded = [];
 
+    protected $appends = [
+        'created_at_format'
+    ];
+
     public const TYPE_PARTICIPANT = 'participant';
     public const TYPE_COMMITTEE = 'committee';
 
@@ -37,5 +41,10 @@ class Participant extends Model
     public function proof_of_payment()
     {
         return $this->belongsTo(MyStorage::class, 'proof_of_payment_id');
+    }
+
+    public function getCreatedAtFormatAttribute()
+    {
+        return formatDateIndo($this->created_at);
     }
 }

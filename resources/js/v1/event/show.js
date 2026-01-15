@@ -204,9 +204,9 @@ let WigaClass = Wiga.class({
             // Refresh render setelah sukses daftar untuk update kuota real-time
             // this.render();
 
-            // WigaRoute.redirect('_reg_/' + res.data.reg_code);
+            // WigaRoute.redirect('reg/' + res.data.reg_code);
 
-            WigaNotify.success(res.message,'_reg_/' + res.data.reg_code);
+            WigaNotify.success(res.message,'reg/' + res.data.reg_code);
 
             // WigaNotify.show({
             //     type: 'success',

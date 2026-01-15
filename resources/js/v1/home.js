@@ -8,7 +8,7 @@ let WigaClass = Wiga.class({
      */
     async render() {
         // Memuat kategori terlebih dahulu agar UI siap
-        await this.fetchCategories();
+        this.fetchCategories();
         // Memuat data event pertama kali
         this.getData();
         // Memasang semua event listener
@@ -81,6 +81,7 @@ let WigaClass = Wiga.class({
 
         // Request ke API
         let response = await WigaHttp.get(`/event?page=${page}&category=${this.currentCategory}&search=${search}`);
+        Wiga.log(response)
         
         WigaHttp.handle(response, null, (res) => {
             let html = '';

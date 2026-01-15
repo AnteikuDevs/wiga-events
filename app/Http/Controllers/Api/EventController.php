@@ -100,7 +100,7 @@ Berikut adalah data registrasi Anda:
 🏢 Instansi : {$request->agency}
 
 Silakan simpan atau unduh bukti pendaftaran Anda melalui link berikut:
-👉 " . route('event.reg-code.generate', $request->reg_code) . "
+👉 " . url('reg/'. $request->reg_code) . "
 
 *Informasi Penting:*
 - Simpan kode registrasi ini untuk proses *check-in* di lokasi acara.
